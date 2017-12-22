@@ -22,17 +22,17 @@ public:
 	IntStringBidirectionalMap() = default;
 	virtual ~IntStringBidirectionalMap() = default;
 
-	bool Emplace(int key, const std::string& val)
+	bool Emplace(const int& first, const std::string& second)
 	{
 		assert(items.size() == map1.size());
 		assert(items.size() == map2.size());
 
-		bool keyExists = map1.find(&key) != map1.end();
-		bool valueExists = map2.find(&val) != map2.end();
-		if (keyExists || valueExists)
+		bool firstExists = map1.find(&first) != map1.end();
+		bool secondExists = map2.find(&second) != map2.end();
+		if (firstExists || secondExists)
 			return false;
 		
-		items.emplace_back(key, val);
+		items.emplace_back(first, second);
 		Item& item = items.back();
 		map1.emplace(&(item.first), &item);
 		map2.emplace(&(item.second), &item);
