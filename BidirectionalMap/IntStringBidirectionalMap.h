@@ -5,6 +5,7 @@
 #include <list>
 #include <map>
 #include <cassert>
+//#include <iterator>
 
 class IntStringBidirectionalMap
 {
@@ -14,16 +15,23 @@ class IntStringBidirectionalMap
 	};
 
 	using Item = std::pair<int, std::string>;
+	using Container = std::list<Item>;
+	using ContainerIterator = Container::iterator;
 
 public:
 	IntStringBidirectionalMap() = default;
 	virtual ~IntStringBidirectionalMap() = default;
 
-	void emplace(int key, const std::string& val)
+	bool Emplace(int key, const std::string& val)
 	{
 		assert(items.size() == map1.size());
 		assert(items.size() == map2.size());
 
+		bool keyExists = map1.find(&key) != map1.end();
+		bool valueExists = map2.find(&val) != map2.end();
+		if (keyExists || valueExists)
+			return false;
+		
 		items.emplace_back(key, val);
 		Item& item = items.back();
 		map1.emplace(&(item.first), &item);
@@ -31,27 +39,34 @@ public:
 
 		assert(items.size() == map1.size());
 		assert(items.size() == map2.size());
+
+		return true;
 	}
 
-	void set(int key, const std::string& val)
+	bool Set(int key, const std::string& val)
 	{
 		bool keyExists = map1.find(&key) != map1.end();
 		bool valueExists = map2.find(&val) != map2.end();
-		if (keyExists && valueExists)
-			return;
-		if (keyExists == false)
+		if (keyExists == valueExists)
+			return false;
+		if (keyExists)
 		{
-			// TODO: remove old key from map1 and create a new one
+			auto item = map1.find(&key);
+			map2.erase(&(item->second->second));
+			item->second->second = val;
+			map2.emplace(&val, item->second);
 		}
-		if (valueExists)
+		else if (valueExists)
 		{
-			// TODO: remove old value from map2 and create a new one
+			auto item = map2.find(&val);
+			map1.erase(&(item->second->first));
+			item->second->first = key;
+			map1.emplace(&key, item->second);
 		}
-		else
-			emplace(key, val);
+		return true;
 	}
 
-	void clear()
+	void Clear()
 	{
 		items.clear();
 		map1.clear();
@@ -70,42 +85,22 @@ public:
 		assert(items.size() == map1.size());
 		assert(items.size() == map2.size());
 
-		return map1.at(&key)->second;
+		const auto& item = map1.at(&key);
+		return item->second;
 	}
-
-	//std::string& operator[](int&& key) noexcept
-	//{
-	//	assert(items.size() == map1.size());
-	//	assert(items.size() == map2.size());
-
-	//	if (map1.find(&key) == map1.end())
-	//		emplace(key, "");
-	//	return map1[&key]->second;
-	//}
 
 	const int& operator[](const std::string& key) const noexcept
 	{
 		assert(items.size() == map1.size());
 		assert(items.size() == map2.size());
 
-		return map2.at(&key)->first;
+		const auto& item = map2.at(&key);
+		return item->first;
 	}
-
-	//int& operator[](std::string&& key) noexcept
-	//{
-	//	assert(items.size() == map1.size());
-	//	assert(items.size() == map2.size());
-
-	//	if (map2.find(&key) == map2.end())
-	//		emplace(0, key);
-	//	return map2[&key]->first;
-	//}
 
 private:
 	std::list<Item> items;
 	std::map<const int*, Item*, PointerComparator<int>> map1;
 	std::map<const std::string*, Item*, PointerComparator<std::string>> map2;
-
-
 };
 
