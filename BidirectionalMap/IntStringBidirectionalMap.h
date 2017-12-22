@@ -43,26 +43,37 @@ public:
 		return true;
 	}
 
-	bool Set(int key, const std::string& val)
+	bool Set(int first, const std::string& second)
 	{
-		bool keyExists = map1.find(&key) != map1.end();
-		bool valueExists = map2.find(&val) != map2.end();
-		if (keyExists == valueExists)
+		assert(items.size() == map1.size());
+		assert(items.size() == map2.size());
+
+		auto map1Item = map1.find(&first);
+		bool firstExists = map1Item != map1.end();
+		auto map2Item = map2.find(&second);
+		bool secondExists = map2Item != map2.end();
+		// return false if both keys exist or if none exists
+		if (firstExists == secondExists)
 			return false;
-		if (keyExists)
+		// if first key exists, then second will be changed. Old key must be removed from map2 and new created.
+		if (firstExists)
 		{
-			auto item = map1.find(&key)->second;
+			auto item = map1Item->second;
 			map2.erase(&(item->second));
-			item->second = val;
+			item->second = second;
 			map2.emplace(&(item->second), item);
 		}
-		else if (valueExists)
+		// if second key exists, then first will be changed. Old key must be removed from map1 and new created.
+		else if (secondExists)
 		{
-			auto item = map2.find(&val)->second;
+			auto item = map2Item->second;
 			map1.erase(&(item->first));
-			item->first = key;
+			item->first = first;
 			map1.emplace(&(item->first), item);
 		}
+
+		assert(items.size() == map1.size());
+		assert(items.size() == map2.size());
 		return true;
 	}
 
@@ -71,31 +82,44 @@ public:
 		items.clear();
 		map1.clear();
 		map2.clear();
+
+		assert(items.size() == 0);
+		assert(map1.size() == 0);
+		assert(map2.size() == 0);
 	}
 
-	size_t size() const
+	size_t Size() const
 	{
 		assert(items.size() == map1.size());
 		assert(items.size() == map2.size());
+
 		return items.size();
 	}
 
-	const std::string& operator[](const int& key) const noexcept
+	bool Exists(const int& first) const
 	{
-		assert(items.size() == map1.size());
-		assert(items.size() == map2.size());
-
-		const auto& item = map1.at(&key);
-		return item->second;
+		return map1.find(&first) != map1.end();
 	}
 
-	const int& operator[](const std::string& key) const noexcept
+	bool Exists(const std::string& second)
+	{
+		return map2.find(&second) != map2.end();
+	}
+
+	const std::string& operator[](const int& first) const noexcept
 	{
 		assert(items.size() == map1.size());
 		assert(items.size() == map2.size());
 
-		const auto& item = map2.at(&key);
-		return item->first;
+		return map1.at(&first)->second;
+	}
+
+	const int& operator[](const std::string& second) const noexcept
+	{
+		assert(items.size() == map1.size());
+		assert(items.size() == map2.size());
+
+		return map2.at(&second)->first;
 	}
 
 private:
