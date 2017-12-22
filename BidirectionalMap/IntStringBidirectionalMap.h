@@ -51,17 +51,17 @@ public:
 			return false;
 		if (keyExists)
 		{
-			auto item = map1.find(&key);
-			map2.erase(&(item->second->second));
-			item->second->second = val;
-			map2.emplace(&val, item->second);
+			auto item = map1.find(&key)->second;
+			map2.erase(&(item->second));
+			item->second = val;
+			map2.emplace(&(item->second), item);
 		}
 		else if (valueExists)
 		{
-			auto item = map2.find(&val);
-			map1.erase(&(item->second->first));
-			item->second->first = key;
-			map1.emplace(&key, item->second);
+			auto item = map2.find(&val)->second;
+			map1.erase(&(item->first));
+			item->first = key;
+			map1.emplace(&(item->first), item);
 		}
 		return true;
 	}
