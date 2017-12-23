@@ -23,28 +23,28 @@ public:
 	{
 		assert(items.size() == map1.size());
 		assert(items.size() == map2.size());
-		return DoInsert(first, second);
+		return InsertPair(first, second);
 	}
 
 	bool Insert(T1&& first, T2&& second)
 	{
 		assert(items.size() == map1.size());
 		assert(items.size() == map2.size());
-		return DoInsert(std::forward<T1>(first), std::forward<T2>(second));
+		return InsertPair(std::forward<T1>(first), std::forward<T2>(second));
 	}
 
 	bool Insert(const T1& first, T2&& second)
 	{
 		assert(items.size() == map1.size());
 		assert(items.size() == map2.size());
-		return DoInsert(first, std::forward<T2>(second));
+		return InsertPair(first, std::forward<T2>(second));
 	}
 
 	bool Insert(T1&& first, const T2& second)
 	{
 		assert(items.size() == map1.size());
 		assert(items.size() == map2.size());
-		return DoInsert(std::forward<T1>(first), second);
+		return InsertPair(std::forward<T1>(first), second);
 	}
 
 	bool Change(const T1& first, const T2& second)
@@ -123,23 +123,19 @@ private:
 	std::map<const T1*, Item*, PointerComparator<T1>> map1;
 	std::map<const T2*, Item*, PointerComparator<T2>> map2;
 
-	bool DoInsert(T1 first, T2 second)
+	bool InsertPair(T1 first, T2 second)
 	{
 		if (FirstExists(first) || SecondExists(second))
 			return false;
-		items.emplace_back(std::forward<T1>(first), std::forward<T2>(second));
-		SetKeys();
-		return true;
-	}
 
-	void SetKeys()
-	{
+		items.emplace_back(std::forward<T1>(first), std::forward<T2>(second));
 		Item& item = items.back();
 		map1.emplace(&(item.first), &item);
 		map2.emplace(&(item.second), &item);
 
 		assert(items.size() == map1.size());
 		assert(items.size() == map2.size());
+		return true;
 	}
 
 	bool ChangeValue(T1 first, T2 second)
@@ -147,7 +143,7 @@ private:
 		// return false if both keys exist or if none exists
 		if (FirstExists(first) == SecondExists(second))
 			return false;
-		// if first key exists, then second will be changed. Old second key must be removed from map2 and new created.
+		// if first key exists, then second will be changed
 		if (FirstExists(first))
 			ChangeSecond(std::forward<T1>(first), std::forward<T2>(second));
 		// if second key exists, then first will be changed. Old first key must be removed from map1 and new created.
@@ -161,6 +157,7 @@ private:
 
 	void ChangeSecond(T1 first, T2 second)
 	{
+		// old second key must be removed from map2 and new created
 		auto item = map1.find(&first)->second;
 		map2.erase(&(item->second));
 		item->second = std::forward<T2>(second);
@@ -169,6 +166,7 @@ private:
 
 	void ChangeFirst(T1 first, T2 second)
 	{
+		// old first key must be removed from map1 and new created
 		auto item = map2.find(&second)->second;
 		map1.erase(&(item->first));
 		item->first = std::forward<T1>(first);
