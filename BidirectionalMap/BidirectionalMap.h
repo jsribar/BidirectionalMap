@@ -7,6 +7,8 @@
 
 template <typename T1, typename T2> class BidirectionalMap
 {
+	// static_assert(std::is_same<T1, T2>::value == false);
+
 	template<typename T> struct PointerComparator
 	{
 		inline bool operator()(const T* t1, const T* t2) const noexcept { return *t1 < *t2; }
@@ -84,6 +86,30 @@ public:
 		assert(items.size() == 0);
 		assert(map1.size() == 0);
 		assert(map2.size() == 0);
+	}
+
+	bool Remove(const T1& first)
+	{
+		const auto& key1 = map1.find(&first);
+		if (key1 == map1.end())
+			return false;
+		const Item* pItem = key1->second;
+		map2.erase(&(pItem->second));
+		map1.erase(key1);
+		items.remove(*pItem);
+		return true;
+	}
+
+	bool Remove(const T2& second)
+	{
+		const auto& key2 = map2.find(&second);
+		if (key2 == map2.end())
+			return false;
+		const Item* pItem = key2->second;
+		map1.erase(&(pItem->first));
+		map2.erase(key2);
+		items.remove(*pItem);
+		return true;
 	}
 
 	size_t Size() const noexcept

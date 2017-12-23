@@ -102,25 +102,6 @@ namespace UnitTests
 			Assert::IsFalse(bm.Insert(1, "world"));
 		}
 
-		TEST_METHOD(BidirectionalMap_ClearMethodErasesAllItems)
-		{
-			std::vector<std::pair<int, std::string>> entries =
-			{
-				{ 5, "hello" },
-				{ 2, "world" },
-				{ 7, "Guten Tag" }
-			};
-
-			BidirectionalMap<int, std::string> bm;
-			for (const auto& item : entries)
-			{
-				bm.Insert(item.first, item.second);
-			}
-
-			bm.Clear();
-			Assert::AreEqual(size_t(0), bm.Size());
-		}
-
 		TEST_METHOD(BidirectionalMap_ChangeMethodChangesFirstValueForExistingPairThatHasSameSecondValue)
 		{
 			BidirectionalMap<int, std::string> bm;
@@ -177,6 +158,56 @@ namespace UnitTests
 			bm.Insert(first, second);
 
 			Assert::IsFalse(bm.Change(first, second));
+		}
+
+		TEST_METHOD(BidirectionalMap_ClearMethodErasesAllItems)
+		{
+			std::vector<std::pair<int, std::string>> entries =
+			{
+				{ 5, "hello" },
+				{ 2, "world" },
+				{ 7, "Guten Tag" }
+			};
+
+			BidirectionalMap<int, std::string> bm;
+			for (const auto& item : entries)
+			{
+				bm.Insert(item.first, item.second);
+			}
+
+			bm.Clear();
+			Assert::AreEqual(size_t(0), bm.Size());
+		}
+
+		TEST_METHOD(BidirectionalMap_RemoveMethodRemovesPairContainingProvidedValue)
+		{
+			std::vector<std::pair<int, std::string>> entries =
+			{
+				{ 5, "hello" },
+				{ 2, "world" },
+				{ 7, "Guten Tag" },
+				{ 8, "Dobar dan" }
+			};
+
+			BidirectionalMap<int, std::string> bm;
+			for (const auto& item : entries)
+			{
+				bm.Insert(item.first, item.second);
+			}
+
+			bm.Remove(5);
+			Assert::AreEqual(size_t(3), bm.Size());
+			Assert::IsFalse(bm.FirstExists(5));
+			Assert::IsFalse(bm.SecondExists("hello"));
+			Assert::AreEqual(2, bm["world"]);
+			Assert::AreEqual(7, bm["Guten Tag"]);
+
+			bm.Remove("Guten Tag");
+			Assert::AreEqual(size_t(2), bm.Size());
+			Assert::IsFalse(bm.SecondExists("Guten Tag"));
+			Assert::IsFalse(bm.FirstExists(7));
+			Assert::AreEqual(2, bm["world"]);
+			Assert::AreEqual(8, bm["Dobar dan"]);
 		}
 
 		TEST_METHOD(BidirectionalMap_ExistsReturnsTrueIfAPairWithValueProvidedExists)
