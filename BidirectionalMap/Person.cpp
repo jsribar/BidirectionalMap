@@ -17,8 +17,8 @@ Person::Person(const Person& other)
 
 Person::Person(Person&& other)
 {
-	std::exchange(name, other.name);
-	std::exchange(familyName, other.familyName);
+	name = std::move(other.name);
+	familyName = std::move(other.familyName);
 }
 
 Person::~Person()
@@ -32,5 +32,19 @@ bool Person::operator<(const Person& other) const
 	if (result == 0)
 		result = name.compare(other.name);
 	return result < 0;
+}
+
+Person& Person::operator=(const Person& other)
+{
+	name = other.name;
+	familyName = other.familyName;
+	return *this;
+}
+
+Person& Person::operator=(Person&& other)
+{
+	name = std::move(other.name);
+	familyName = std::move(other.familyName);
+	return *this;
 }
 

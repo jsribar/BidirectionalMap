@@ -12,6 +12,9 @@ public:
 
 	bool operator<(const Person& other) const;
 
+	Person& operator=(const Person& other);
+	Person& operator=(Person&& other);
+
 private:
 	std::string name;
 	std::string familyName;
