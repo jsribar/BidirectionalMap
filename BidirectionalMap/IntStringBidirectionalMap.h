@@ -26,12 +26,29 @@ public:
 		assert(items.size() == map1.size());
 		assert(items.size() == map2.size());
 
-		bool firstExists = map1.find(&first) != map1.end();
-		bool secondExists = map2.find(&second) != map2.end();
-		if (firstExists || secondExists)
+		if (Exists(first) || Exists(second))
 			return false;
 		
 		items.emplace_back(first, second);
+		Item* pItem = &items.back();
+		map1.emplace(&(pItem->first), pItem);
+		map2.emplace(&(pItem->second), pItem);
+
+		assert(items.size() == map1.size());
+		assert(items.size() == map2.size());
+
+		return true;
+	}
+
+	bool Emplace(int&& first, std::string&& second)
+	{
+		assert(items.size() == map1.size());
+		assert(items.size() == map2.size());
+
+		if (Exists(first) || Exists(second))
+			return false;
+
+		items.emplace_back(std::forward<int>(first), std::forward<std::string>(second));
 		Item& item = items.back();
 		map1.emplace(&(item.first), &item);
 		map2.emplace(&(item.second), &item);
@@ -41,6 +58,7 @@ public:
 
 		return true;
 	}
+
 
 	bool Set(const int& first, const std::string& second)
 	{
@@ -57,18 +75,18 @@ public:
 		// if first key exists, then second will be changed. Old key must be removed from map2 and new created.
 		if (firstExists)
 		{
-			auto item = map1Item->second;
-			map2.erase(&(item->second));
-			item->second = second;
-			map2.emplace(&(item->second), item);
+			auto pItem = map1Item->second;
+			map2.erase(&(pItem->second));
+			pItem->second = second;
+			map2.emplace(&(pItem->second), pItem);
 		}
 		// if second key exists, then first will be changed. Old key must be removed from map1 and new created.
 		else if (secondExists)
 		{
-			auto item = map2Item->second;
-			map1.erase(&(item->first));
-			item->first = first;
-			map1.emplace(&(item->first), item);
+			auto pItem = map2Item->second;
+			map1.erase(&(pItem->first));
+			pItem->first = first;
+			map1.emplace(&(pItem->first), pItem);
 		}
 
 		assert(items.size() == map1.size());
