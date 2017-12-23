@@ -1,36 +1,32 @@
 #pragma once
 
 #include <utility>
-#include <string>
 #include <list>
 #include <map>
 #include <cassert>
-//#include <iterator>
 
-class IntStringBidirectionalMap
+template <typename T1, typename T2> class BidirectionalMap
 {
 	template<typename T> struct PointerComparator
 	{
 		inline bool operator()(const T* t1, const T* t2) const noexcept { return *t1 < *t2; }
 	};
 
-	using Item = std::pair<int, std::string>;
+	using Item = std::pair<T1, T2>;
 	using Container = std::list<Item>;
 
 public:
-	IntStringBidirectionalMap() = default;
-	virtual ~IntStringBidirectionalMap() = default;
+	BidirectionalMap() = default;
+	virtual ~BidirectionalMap() = default;
 
-	bool Emplace(const int& first, const std::string& second)
+	bool Emplace(const T1& first, const T2& second)
 	{
 		assert(items.size() == map1.size());
 		assert(items.size() == map2.size());
 
-		bool firstExists = map1.find(&first) != map1.end();
-		bool secondExists = map2.find(&second) != map2.end();
-		if (firstExists || secondExists)
+		if (FirstExists(first) || SecondExists(second))
 			return false;
-		
+
 		items.emplace_back(first, second);
 		Item& item = items.back();
 		map1.emplace(&(item.first), &item);
@@ -42,30 +38,45 @@ public:
 		return true;
 	}
 
-	bool Set(const int& first, const std::string& second)
+	//bool Emplace(T1&& first, T2&& second)
+	//{
+	//	assert(items.size() == map1.size());
+	//	assert(items.size() == map2.size());
+
+	//	if (FirstExists(first) || SecondExists(second))
+	//		return false;
+
+	//	items.emplace_back(std::forward<T1>(first), std::forward<T1>(second));
+	//	Item& item = items.back();
+	//	map1.emplace(&(item.first), &item);
+	//	map2.emplace(&(item.second), &item);
+
+	//	assert(items.size() == map1.size());
+	//	assert(items.size() == map2.size());
+
+	//	return true;
+	//}
+
+	bool Set(const T1& first, const T2& second)
 	{
 		assert(items.size() == map1.size());
 		assert(items.size() == map2.size());
 
-		auto map1Item = map1.find(&first);
-		bool firstExists = map1Item != map1.end();
-		auto map2Item = map2.find(&second);
-		bool secondExists = map2Item != map2.end();
 		// return false if both keys exist or if none exists
-		if (firstExists == secondExists)
+		if (FirstExists(first) == SecondExists(second))
 			return false;
 		// if first key exists, then second will be changed. Old key must be removed from map2 and new created.
-		if (firstExists)
+		if (FirstExists(first))
 		{
-			auto item = map1Item->second;
+			auto item = map1.find(&first)->second;
 			map2.erase(&(item->second));
 			item->second = second;
 			map2.emplace(&(item->second), item);
 		}
 		// if second key exists, then first will be changed. Old key must be removed from map1 and new created.
-		else if (secondExists)
+		else if (SecondExists(second))
 		{
-			auto item = map2Item->second;
+			auto item = map2.find(&second)->second;
 			map1.erase(&(item->first));
 			item->first = first;
 			map1.emplace(&(item->first), item);
@@ -95,17 +106,17 @@ public:
 		return items.size();
 	}
 
-	bool Exists(const int& first) const
+	bool FirstExists(const T1& first) const
 	{
 		return map1.find(&first) != map1.end();
 	}
 
-	bool Exists(const std::string& second)
+	bool SecondExists(const T2& second) const
 	{
 		return map2.find(&second) != map2.end();
 	}
 
-	const std::string& operator[](const int& first) const noexcept
+	const T2& operator[](const T1& first) const noexcept
 	{
 		assert(items.size() == map1.size());
 		assert(items.size() == map2.size());
@@ -113,7 +124,7 @@ public:
 		return map1.at(&first)->second;
 	}
 
-	const int& operator[](const std::string& second) const noexcept
+	const T1& operator[](const T2& second) const noexcept
 	{
 		assert(items.size() == map1.size());
 		assert(items.size() == map2.size());
@@ -126,4 +137,3 @@ private:
 	std::map<const int*, Item*, PointerComparator<int>> map1;
 	std::map<const std::string*, Item*, PointerComparator<std::string>> map2;
 };
-

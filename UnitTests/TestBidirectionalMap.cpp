@@ -2,19 +2,19 @@
 #include "CppUnitTest.h"
 #include <vector>
 #include <utility>
-#include "../BidirectionalMap/IntStringBidirectionalMap.h"
+#include "../BidirectionalMap/BidirectionalMap.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace UnitTests
-{		
-	TEST_CLASS(IntStringBidirectionalMapTest)
+{
+	TEST_CLASS(BidirectionalMapTest)
 	{
 	public:
-		
-		TEST_METHOD(IntStringBidirectionalMap_EmplaceMethodAddsNewPair)
+
+		TEST_METHOD(BidirectionalMap_EmplaceMethodAddsNewPair)
 		{
-			IntStringBidirectionalMap bm;
+			BidirectionalMap<int, std::string> bm;
 			Assert::AreEqual(size_t(0), bm.Size());
 
 			int first = 1;
@@ -26,25 +26,25 @@ namespace UnitTests
 			Assert::AreEqual(first, bm[second]);
 		}
 
-		TEST_METHOD(IntStringBidirectionalMap_EmplaceMethodReturnsTrueIfPairHasBeenAddedSuccessfully)
+		TEST_METHOD(BidirectionalMap_EmplaceMethodReturnsTrueIfPairHasBeenAddedSuccessfully)
 		{
-			IntStringBidirectionalMap bm;
+			BidirectionalMap<int, std::string> bm;
 			Assert::AreEqual(size_t(0), bm.Size());
 
 			Assert::IsTrue(bm.Emplace(1, "hello"));
 			Assert::AreEqual(size_t(1), bm.Size());
 		}
 
-		TEST_METHOD(IntStringBidirectionalMap_EmplaceMethodCreatesMultiplePairsForEachCompletelyDifferentPairs)
+		TEST_METHOD(BidirectionalMap_EmplaceMethodCreatesMultiplePairsForEachCompletelyDifferentPairs)
 		{
-			std::vector<std::pair<int, std::string>> entries = 
-			{ 
+			std::vector<std::pair<int, std::string>> entries =
+			{
 				{ 5, "hello" },
 				{ 2, "world" },
 				{ 7, "Guten Tag" }
 			};
 
-			IntStringBidirectionalMap bm;
+			BidirectionalMap<int, std::string> bm;
 			for (const auto& item : entries)
 			{
 				bm.Emplace(item.first, item.second);
@@ -61,9 +61,9 @@ namespace UnitTests
 			}
 		}
 
-		TEST_METHOD(IntStringBidirectionalMap_EmplaceMethodDoesNotAddPairIfFirstValueAlreadyExists)
+		TEST_METHOD(BidirectionalMap_EmplaceMethodDoesNotAddPairIfFirstValueAlreadyExists)
 		{
-			IntStringBidirectionalMap bm;
+			BidirectionalMap<int, std::string> bm;
 			Assert::AreEqual(size_t(0), bm.Size());
 
 			int first = 1;
@@ -76,9 +76,9 @@ namespace UnitTests
 			Assert::AreEqual(first, bm[second]);
 		}
 
-		TEST_METHOD(IntStringBidirectionalMap_EmplaceMethodDoesNotAddPairIfSecondValueAlreadyExists)
+		TEST_METHOD(BidirectionalMap_EmplaceMethodDoesNotAddPairIfSecondValueAlreadyExists)
 		{
-			IntStringBidirectionalMap bm;
+			BidirectionalMap<int, std::string> bm;
 			Assert::AreEqual(size_t(0), bm.Size());
 
 			int first = 1;
@@ -91,9 +91,9 @@ namespace UnitTests
 			Assert::AreEqual(first, bm[second]);
 		}
 
-		TEST_METHOD(IntStringBidirectionalMap_EmplaceMethodReturnsFalseIfPairHasNotBeenAddedSuccessfully)
+		TEST_METHOD(BidirectionalMap_EmplaceMethodReturnsFalseIfPairHasNotBeenAddedSuccessfully)
 		{
-			IntStringBidirectionalMap bm;
+			BidirectionalMap<int, std::string> bm;
 			Assert::AreEqual(size_t(0), bm.Size());
 
 			bm.Emplace(1, "hello");
@@ -102,7 +102,7 @@ namespace UnitTests
 			Assert::IsFalse(bm.Emplace(1, "world"));
 		}
 
-		TEST_METHOD(IntStringBidirectionalMap_ClearMethodErasesAllItems)
+		TEST_METHOD(BidirectionalMap_ClearMethodErasesAllItems)
 		{
 			std::vector<std::pair<int, std::string>> entries =
 			{
@@ -111,7 +111,7 @@ namespace UnitTests
 				{ 7, "Guten Tag" }
 			};
 
-			IntStringBidirectionalMap bm;
+			BidirectionalMap<int, std::string> bm;
 			for (const auto& item : entries)
 			{
 				bm.Emplace(item.first, item.second);
@@ -121,9 +121,9 @@ namespace UnitTests
 			Assert::AreEqual(size_t(0), bm.Size());
 		}
 
-		TEST_METHOD(IntStringBidirectionalMap_SetMethodChangesFirstValueForExistingPairThatHasSameSecondValue)
+		TEST_METHOD(BidirectionalMap_SetMethodChangesFirstValueForExistingPairThatHasSameSecondValue)
 		{
-			IntStringBidirectionalMap bm;
+			BidirectionalMap<int, std::string> bm;
 			int first = 1;
 			std::string second = "hello";
 			bm.Emplace(first, second);
@@ -136,9 +136,9 @@ namespace UnitTests
 			Assert::AreEqual(second, bm[newFirst]);
 		}
 
-		TEST_METHOD(IntStringBidirectionalMap_SetMethodChangesSecondValueForExistingPairThatHasSameFirstValue)
+		TEST_METHOD(BidirectionalMap_SetMethodChangesSecondValueForExistingPairThatHasSameFirstValue)
 		{
-			IntStringBidirectionalMap bm;
+			BidirectionalMap<int, std::string> bm;
 			int first = 1;
 			std::string second = "hello";
 			bm.Emplace(first, second);
@@ -151,27 +151,27 @@ namespace UnitTests
 			Assert::AreEqual(first, bm[newSecond]);
 		}
 
-		TEST_METHOD(IntStringBidirectionalMap_SetMethodDoesNotAddNewPairIfNoPairHasSameFirstOrSecondValue)
+		TEST_METHOD(BidirectionalMap_SetMethodDoesNotAddNewPairIfNoPairHasSameFirstOrSecondValue)
 		{
-			IntStringBidirectionalMap bm;
+			BidirectionalMap<int, std::string> bm;
 			bm.Emplace(1, "hello");
 
 			bm.Set(2, "world");
 			Assert::AreEqual(size_t(1), bm.Size());
 		}
 
-		TEST_METHOD(IntStringBidirectionalMap_SetMethodReturnsTrueIfExistingPairHasBeenModified)
+		TEST_METHOD(BidirectionalMap_SetMethodReturnsTrueIfExistingPairHasBeenModified)
 		{
-			IntStringBidirectionalMap bm;
+			BidirectionalMap<int, std::string> bm;
 			bm.Emplace(1, "hello");
 
 			Assert::IsTrue(bm.Set(1, "world"));
 			Assert::IsTrue(bm.Set(2, "world"));
 		}
 
-		TEST_METHOD(IntStringBidirectionalMap_SetMethodReturnsFalseForAlreadyExistingPair)
+		TEST_METHOD(BidirectionalMap_SetMethodReturnsFalseForAlreadyExistingPair)
 		{
-			IntStringBidirectionalMap bm;
+			BidirectionalMap<int, std::string> bm;
 			int first = 1;
 			std::string second = "hello";
 			bm.Emplace(first, second);
@@ -179,28 +179,28 @@ namespace UnitTests
 			Assert::IsFalse(bm.Set(first, second));
 		}
 
-		TEST_METHOD(IntStringBidirectionalMap_ExistsReturnsTrueIfAPairWithValueProvidedExists)
+		TEST_METHOD(BidirectionalMap_ExistsReturnsTrueIfAPairWithValueProvidedExists)
 		{
 			int first = 1;
 			std::string second = "hello";
 
-			IntStringBidirectionalMap bm;
-			Assert::IsFalse(bm.Exists(first));
-			Assert::IsFalse(bm.Exists(second));
-			
+			BidirectionalMap<int, std::string> bm;
+			Assert::IsFalse(bm.FirstExists(first));
+			Assert::IsFalse(bm.SecondExists(second));
+
 			bm.Emplace(first, second);
 
-			Assert::IsTrue(bm.Exists(first));
-			Assert::IsTrue(bm.Exists(second));
+			Assert::IsTrue(bm.FirstExists(first));
+			Assert::IsTrue(bm.SecondExists(second));
 		}
 
-		TEST_METHOD(IntStringBidirectionalMap_ExistsReturnsFalseIfNoPairWithValueProvidedExists)
+		TEST_METHOD(BidirectionalMap_ExistsReturnsFalseIfNoPairWithValueProvidedExists)
 		{
-			IntStringBidirectionalMap bm;
+			BidirectionalMap<int, std::string> bm;
 			bm.Emplace(1, "hello");
 
-			Assert::IsFalse(bm.Exists(2));
-			Assert::IsFalse(bm.Exists("world"));
+			Assert::IsFalse(bm.FirstExists(2));
+			Assert::IsFalse(bm.SecondExists("world"));
 		}
 	};
 }
