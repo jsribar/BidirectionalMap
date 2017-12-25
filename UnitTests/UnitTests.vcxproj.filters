@@ -32,5 +32,8 @@
     <ClCompile Include="TestBidirectionalMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TestBidirectionalUnorderedMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
