@@ -41,9 +41,6 @@
     <ClCompile Include="ConsoleApplication.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CompareMapBimapAccess.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GenerateRandomStrings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

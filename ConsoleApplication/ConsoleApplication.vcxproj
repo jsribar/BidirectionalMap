@@ -155,7 +155,6 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CompareMapBimapAccess.cpp" />
     <ClCompile Include="ConsoleApplication.cpp" />
     <ClCompile Include="GenerateRandomStrings.cpp" />
     <ClCompile Include="Person.cpp" />
