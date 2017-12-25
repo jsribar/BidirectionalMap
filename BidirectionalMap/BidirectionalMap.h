@@ -19,6 +19,14 @@ template <typename T1, typename T2> class BidirectionalMap
 
 public:
 	BidirectionalMap() = default;
+
+	BidirectionalMap(BidirectionalMap&& other)
+		: items(std::move(other.items))
+		, map1(std::move(other.map1))
+		, map2(std::move(other.map2))
+	{
+	}
+
 	virtual ~BidirectionalMap() = default;
 
 	bool Insert(const T1& first, const T2& second)
