@@ -29,60 +29,20 @@ public:
 
 	virtual ~BidirectionalMap() = default;
 
-	bool Insert(const T1& first, const T2& second)
-	{
-		assert(items.size() == map1.size());
-		assert(items.size() == map2.size());
-		return InsertPair(first, second);
-	}
-
-	bool Insert(T1&& first, T2&& second)
+	template <typename T1, typename T2>
+	bool Insert(T1 first, T2 second)
 	{
 		assert(items.size() == map1.size());
 		assert(items.size() == map2.size());
 		return InsertPair(std::forward<T1>(first), std::forward<T2>(second));
 	}
 
-	bool Insert(const T1& first, T2&& second)
-	{
-		assert(items.size() == map1.size());
-		assert(items.size() == map2.size());
-		return InsertPair(first, std::forward<T2>(second));
-	}
-
-	bool Insert(T1&& first, const T2& second)
-	{
-		assert(items.size() == map1.size());
-		assert(items.size() == map2.size());
-		return InsertPair(std::forward<T1>(first), second);
-	}
-
-	bool Change(const T1& first, const T2& second)
-	{
-		assert(items.size() == map1.size());
-		assert(items.size() == map2.size());
-		return ChangeValue(first, second);
-	}
-
-	bool Change(T1&& first, T2&& second)
+	template <typename T1, typename T2>
+	bool Change(T1 first, T2 second)
 	{
 		assert(items.size() == map1.size());
 		assert(items.size() == map2.size());
 		return ChangeValue(std::forward<T1>(first), std::forward<T2>(second));
-	}
-
-	bool Change(const T1& first, T2&& second)
-	{
-		assert(items.size() == map1.size());
-		assert(items.size() == map2.size());
-		return ChangeValue(first, std::forward<T2>(second));
-	}
-
-	bool Change(T1&& first, const T2& second)
-	{
-		assert(items.size() == map1.size());
-		assert(items.size() == map2.size());
-		return ChangeValue(std::forward<T1>(first), second);
 	}
 
 	void Clear() noexcept
@@ -172,6 +132,7 @@ private:
 		return true;
 	}
 
+	template <typename T1, typename T2>
 	bool ChangeValue(T1 first, T2 second)
 	{
 		// return false if both keys exist or if none exists
