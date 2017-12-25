@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <list>
 #include <unordered_map>
 #include <utility>
@@ -40,6 +41,14 @@ public:
 		assert(items.size() == map1.size());
 		assert(items.size() == map2.size());
 		return InsertPair(std::forward<T1>(first), std::forward<T2>(second));
+	}
+
+	template <typename T1, typename T2>
+	bool Change(T1 first, T2 second)
+	{
+		assert(items.size() == map1.size());
+		assert(items.size() == map2.size());
+		return ChangeValue(std::forward<T1>(first), std::forward<T2>(second));
 	}
 
 	bool FirstExists(const T1& first) const noexcept
@@ -129,4 +138,38 @@ private:
 		return true;
 	}
 
+	bool ChangeValue(T1 first, T2 second)
+	{
+		// return false if both keys exist or if none exists
+		if (FirstExists(first) == SecondExists(second))
+			return false;
+		// if first key exists, then second will be changed
+		if (FirstExists(first))
+			ChangeSecond(std::forward<T1>(first), std::forward<T2>(second));
+		// if second key exists, then first will be changed. Old first key must be removed from map1 and new created.
+		else
+			ChangeFirst(std::forward<T1>(first), std::forward<T2>(second));
+
+		assert(items.size() == map1.size());
+		assert(items.size() == map2.size());
+		return true;
+	}
+
+	void ChangeSecond(T1 first, T2 second)
+	{
+		// old second key must be removed from map2 and new created
+		auto item = map1.find(&first)->second;
+		map2.erase(&(item->second));
+		item->second = std::forward<T2>(second);
+		map2.emplace(&(item->second), item);
+	}
+
+	void ChangeFirst(T1 first, T2 second)
+	{
+		// old first key must be removed from map1 and new created
+		auto item = map2.find(&second)->second;
+		map1.erase(&(item->first));
+		item->first = std::forward<T1>(first);
+		map1.emplace(&(item->first), item);
+	}
 };
