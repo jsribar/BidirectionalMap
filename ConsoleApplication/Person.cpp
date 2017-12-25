@@ -21,11 +21,6 @@ Person::Person(Person&& other)
 	familyName = std::move(other.familyName);
 }
 
-Person::~Person()
-{
-}
-
-
 bool Person::operator<(const Person& other) const
 {
 	int result = familyName.compare(other.familyName);

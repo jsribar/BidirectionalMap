@@ -8,7 +8,7 @@ public:
 	Person(const std::string& name, const std::string& familyName);
 	Person(const Person& other);
 	Person(Person&& other);
-	virtual ~Person();
+	virtual ~Person() = default;
 
 	bool operator<(const Person& other) const;
 
