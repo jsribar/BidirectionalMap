@@ -21,16 +21,7 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CompareMapBimapAccess.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GenerateRandomStrings.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Person.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RandomStringGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -41,13 +32,7 @@
     <ClCompile Include="ConsoleApplication.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GenerateRandomStrings.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Person.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="RandomStringGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

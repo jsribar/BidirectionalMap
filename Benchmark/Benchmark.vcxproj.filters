@@ -21,21 +21,27 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="IntStringBidirectionalMap.h">
+    <ClInclude Include="CompareMapBimapAccess.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BidirectionalMap.h">
+    <ClInclude Include="GenerateRandomStrings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BidirectionalUnorderedMap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BidirectionalTMap.h">
+    <ClInclude Include="RandomStringGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Benchmark.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GenerateRandomStrings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RandomStringGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
