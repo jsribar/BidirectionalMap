@@ -21,6 +21,7 @@ template<typename T> struct DereferencedPointerEquality
 	bool operator()(const T* t1, const T* t2) const noexcept { return *t1 == *t2; }
 };
 
+
 template<typename T1, typename T2, template<typename TKey, typename ...Args> class TMap, template<typename T1> typename ...TMapArgs>
 class BidirectionalTMap
 {
@@ -36,11 +37,7 @@ public:
 	BidirectionalTMap(const BidirectionalTMap& other)
 		: items(other.items)
 	{
-		for (const Item& item : items)
-		{
-			map1[&(item.first)] = &item;
-			map2[&(item.second)] = &item;
-		}
+		BuildMaps();
 	}
 
 	BidirectionalTMap(BidirectionalTMap&& other)
@@ -55,11 +52,7 @@ public:
 	BidirectionalTMap& operator=(const BidirectionalTMap& other)
 	{
 		items = items.other;
-		for (const Item& item : items)
-		{
-			map1[&(item.first)] = &item;
-			map2[&(item.second)] = &item;
-		}
+		BuildMaps();
 		return *this;
 	}
 
@@ -150,6 +143,15 @@ private:
 	std::list<Item> items;
 	TMap<const T1*, Item*, TMapArgs<T1>...> map1;
 	TMap<const T2*, Item*, TMapArgs<T2>...> map2;
+
+	void BuildMaps()
+	{
+		for (const Item& item : items)
+		{
+			map1.emplace(&(item.first), &item);
+			map2.emplace(&(item.second), &item);
+		}
+	}
 
 	bool InsertPair(T1 first, T2 second)
 	{
