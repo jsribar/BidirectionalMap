@@ -65,6 +65,14 @@ namespace MapSpecial
 			return *this;
 		}
 
+		BidirectionalMapBase& operator=(BidirectionalMapBase&& other)
+		{
+			items = std::move(other.items);
+			map1 = std::move(other.map1);
+			map2 = std::move(other.map2);
+			return *this;
+		}
+
 		template <typename T1, typename T2>
 		bool Insert(T1 first, T2 second)
 		{
@@ -224,9 +232,8 @@ namespace MapSpecial
 	class BidirectionalMap : public BidirectionalMapBase<T1, T2, std::map, DereferencedPointerComparator>
 	{
 	public:
-		BidirectionalMap() = default;
-
-		BidirectionalMap(std::initializer_list<std::pair<T1, T2>> il) : BidirectionalMapBase<T1, T2, std::map, DereferencedPointerComparator>(il) { }
+		// Inherit all constructors from base class
+		using BidirectionalMapBase<T1, T2, std::map, DereferencedPointerComparator>::BidirectionalMapBase;
 	};
 
 	// specialization for std::unordered_map
@@ -234,9 +241,8 @@ namespace MapSpecial
 	class BidirectionalUnorderedMap : public BidirectionalMapBase<T1, T2, std::unordered_map, DereferencedPointerHash, DereferencedPointerEquality>
 	{
 	public:
-		BidirectionalUnorderedMap() = default;
-
-		BidirectionalUnorderedMap(std::initializer_list<std::pair<T1, T2>> il) : BidirectionalMapBase<T1, T2, std::unordered_map, DereferencedPointerHash, DereferencedPointerEquality>(il) { }
+		// Inherit all constructors from base class
+		using BidirectionalMapBase<T1, T2, std::unordered_map, DereferencedPointerHash, DereferencedPointerEquality>::BidirectionalMapBase;
 	};
 
 } // namespace MapSpecial

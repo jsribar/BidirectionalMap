@@ -220,6 +220,36 @@ namespace UnitTests
 			Assert::IsFalse(bm.SecondExists("world"));
 		}
 
+		TEST_METHOD(BidirectionalMap_CopyConstructorCreatesNewMap)
+		{
+			std::vector<std::pair<int, std::string>> entries =
+			{
+				{ 5, "hello" },
+				{ 2, "world" },
+				{ 7, "Guten Tag" },
+				{ 8, "Dobar dan" }
+			};
+			BidirectionalMap<int, std::string> bm1;
+			for (const auto& item : entries)
+				bm1.Insert(item.first, item.second);
+
+			BidirectionalMap<int, std::string> bm2(bm1);
+
+			Assert::AreEqual(size_t(4), bm2.Size());
+			Assert::IsTrue(bm2.FirstExists(5));
+			Assert::IsTrue(bm2.FirstExists(2));
+			Assert::IsTrue(bm2.FirstExists(7));
+			Assert::IsTrue(bm2.FirstExists(8));
+			Assert::IsTrue(bm2.SecondExists("hello"));
+			Assert::IsTrue(bm2.SecondExists("world"));
+			Assert::IsTrue(bm2.SecondExists("Guten Tag"));
+			Assert::IsTrue(bm2.SecondExists("Dobar dan"));
+			Assert::AreEqual(2, bm2["world"]);
+			Assert::AreEqual(5, bm2["hello"]);
+			Assert::AreEqual(7, bm2["Guten Tag"]);
+			Assert::AreEqual(8, bm2["Dobar dan"]);
+		}
+
 		BidirectionalMap<int, std::string> CreateMap()
 		{
 			BidirectionalMap<int, std::string> result;
@@ -249,34 +279,24 @@ namespace UnitTests
 			Assert::AreEqual(8, bm["Dobar dan"]);
 		}
 
-		TEST_METHOD(BidirectionalMap_CopyConstructorCreatesNewMap)
+		TEST_METHOD(BidirectionalMap_MoveAssignmentMovesMapData)
 		{
-			std::vector<std::pair<int, std::string>> entries =
-			{
-				{ 5, "hello" },
-				{ 2, "world" },
-				{ 7, "Guten Tag" },
-				{ 8, "Dobar dan" }
-			};
-			BidirectionalMap<int, std::string> bm1;
-			for (const auto& item : entries)
-				bm1.Insert(item.first, item.second);
+			BidirectionalMap<int, std::string> bm;
+			bm = CreateMap();
 
-			BidirectionalMap<int, std::string> bm2(bm1);
-
-			Assert::AreEqual(size_t(4), bm2.Size());
-			Assert::IsTrue(bm2.FirstExists(5));
-			Assert::IsTrue(bm2.FirstExists(2));
-			Assert::IsTrue(bm2.FirstExists(7));
-			Assert::IsTrue(bm2.FirstExists(8));
-			Assert::IsTrue(bm2.SecondExists("hello"));
-			Assert::IsTrue(bm2.SecondExists("world"));
-			Assert::IsTrue(bm2.SecondExists("Guten Tag"));
-			Assert::IsTrue(bm2.SecondExists("Dobar dan"));
-			Assert::AreEqual(2, bm2["world"]);
-			Assert::AreEqual(5, bm2["hello"]);
-			Assert::AreEqual(7, bm2["Guten Tag"]);
-			Assert::AreEqual(8, bm2["Dobar dan"]);
+			Assert::AreEqual(size_t(4), bm.Size());
+			Assert::IsTrue(bm.FirstExists(5));
+			Assert::IsTrue(bm.FirstExists(2));
+			Assert::IsTrue(bm.FirstExists(7));
+			Assert::IsTrue(bm.FirstExists(8));
+			Assert::IsTrue(bm.SecondExists("hello"));
+			Assert::IsTrue(bm.SecondExists("world"));
+			Assert::IsTrue(bm.SecondExists("Guten Tag"));
+			Assert::IsTrue(bm.SecondExists("Dobar dan"));
+			Assert::AreEqual(2, bm["world"]);
+			Assert::AreEqual(5, bm["hello"]);
+			Assert::AreEqual(7, bm["Guten Tag"]);
+			Assert::AreEqual(8, bm["Dobar dan"]);
 		}
 
 		TEST_METHOD(BidirectionalMap_InitializerListConstructorCreatesNewMap)
