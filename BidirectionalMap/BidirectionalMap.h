@@ -1,7 +1,7 @@
 #pragma once
 
 #include <utility>
-#include <list>
+#include <forward_list>
 #include <map>
 #include <unordered_map>
 #include <cassert>
@@ -32,7 +32,7 @@ namespace MapSpecial
 
 	protected:
 		using Item = std::pair<T1, T2>;
-		using Container = std::list<Item>;
+		using Container = std::forward_list<Item>;
 
 	public:
 		BidirectionalMapBase() = default;
@@ -48,6 +48,12 @@ namespace MapSpecial
 			, map1(std::move(other.map1))
 			, map2(std::move(other.map2))
 		{
+		}
+
+		BidirectionalMapBase(std::initializer_list<Item> items)
+			: items{ items }
+		{
+			BuildMaps();
 		}
 
 		virtual ~BidirectionalMapBase() = default;
