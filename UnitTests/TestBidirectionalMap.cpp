@@ -5,6 +5,7 @@
 #include "../BidirectionalMap/BidirectionalMap.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+using namespace MapSpecial;
 
 namespace UnitTests
 {
@@ -29,13 +30,11 @@ namespace UnitTests
 		TEST_METHOD(BidirectionalMap_InsertMethodReturnsTrueIfPairHasBeenAddedSuccessfully)
 		{
 			BidirectionalMap<int, std::string> bm;
-			Assert::AreEqual(size_t(0), bm.Size());
 
 			Assert::IsTrue(bm.Insert(1, "hello"));
-			Assert::AreEqual(size_t(1), bm.Size());
 		}
 
-		TEST_METHOD(BidirectionalMap_InsertMethodCreatesMultiplePairsForEachCompletelyDifferentPairs)
+		TEST_METHOD(BidirectionalMap_InsertMethodCreatesMultiplePairsForEveryCompletelyDifferentPair)
 		{
 			std::vector<std::pair<int, std::string>> entries =
 			{
@@ -43,15 +42,12 @@ namespace UnitTests
 				{ 2, "world" },
 				{ 7, "Guten Tag" }
 			};
-
 			BidirectionalMap<int, std::string> bm;
+
 			for (const auto& item : entries)
-			{
 				bm.Insert(item.first, item.second);
-			}
 
 			Assert::AreEqual(entries.size(), bm.Size());
-
 			size_t i = entries.size();
 			while (i-- > 0)
 			{
@@ -64,11 +60,10 @@ namespace UnitTests
 		TEST_METHOD(BidirectionalMap_InsertMethodDoesNotAddPairIfFirstValueAlreadyExists)
 		{
 			BidirectionalMap<int, std::string> bm;
-			Assert::AreEqual(size_t(0), bm.Size());
-
 			int first = 1;
 			std::string second = "hello";
 			bm.Insert(first, second);
+
 			bm.Insert(first, "world");
 
 			Assert::AreEqual(size_t(1), bm.Size());
@@ -79,11 +74,10 @@ namespace UnitTests
 		TEST_METHOD(BidirectionalMap_InsertMethodDoesNotAddPairIfSecondValueAlreadyExists)
 		{
 			BidirectionalMap<int, std::string> bm;
-			Assert::AreEqual(size_t(0), bm.Size());
-
 			int first = 1;
 			std::string second = "hello";
 			bm.Insert(first, second);
+
 			bm.Insert(2, second);
 
 			Assert::AreEqual(size_t(1), bm.Size());
@@ -94,9 +88,8 @@ namespace UnitTests
 		TEST_METHOD(BidirectionalMap_InsertMethodReturnsFalseIfPairHasNotBeenAddedSuccessfully)
 		{
 			BidirectionalMap<int, std::string> bm;
-			Assert::AreEqual(size_t(0), bm.Size());
-
 			bm.Insert(1, "hello");
+
 			Assert::IsFalse(bm.Insert(1, "hello"));
 			Assert::IsFalse(bm.Insert(2, "hello"));
 			Assert::IsFalse(bm.Insert(1, "world"));
@@ -138,6 +131,7 @@ namespace UnitTests
 			bm.Insert(1, "hello");
 
 			bm.Change(2, "world");
+
 			Assert::AreEqual(size_t(1), bm.Size());
 		}
 
@@ -168,14 +162,12 @@ namespace UnitTests
 				{ 2, "world" },
 				{ 7, "Guten Tag" }
 			};
-
 			BidirectionalMap<int, std::string> bm;
 			for (const auto& item : entries)
-			{
 				bm.Insert(item.first, item.second);
-			}
 
 			bm.Clear();
+
 			Assert::AreEqual(size_t(0), bm.Size());
 		}
 
@@ -191,11 +183,10 @@ namespace UnitTests
 
 			BidirectionalMap<int, std::string> bm;
 			for (const auto& item : entries)
-			{
 				bm.Insert(item.first, item.second);
-			}
 
 			bm.Remove(5);
+
 			Assert::AreEqual(size_t(3), bm.Size());
 			Assert::IsFalse(bm.FirstExists(5));
 			Assert::IsFalse(bm.SecondExists("hello"));
@@ -203,6 +194,7 @@ namespace UnitTests
 			Assert::AreEqual(7, bm["Guten Tag"]);
 
 			bm.Remove("Guten Tag");
+
 			Assert::AreEqual(size_t(2), bm.Size());
 			Assert::IsFalse(bm.SecondExists("Guten Tag"));
 			Assert::IsFalse(bm.FirstExists(7));
@@ -214,11 +206,7 @@ namespace UnitTests
 		{
 			int first = 1;
 			std::string second = "hello";
-
 			BidirectionalMap<int, std::string> bm;
-			Assert::IsFalse(bm.FirstExists(first));
-			Assert::IsFalse(bm.SecondExists(second));
-
 			bm.Insert(first, second);
 
 			Assert::IsTrue(bm.FirstExists(first));
@@ -232,6 +220,36 @@ namespace UnitTests
 
 			Assert::IsFalse(bm.FirstExists(2));
 			Assert::IsFalse(bm.SecondExists("world"));
+		}
+
+		TEST_METHOD(BidirectionalMap_CopyConstructorCreatesNewMap)
+		{
+			std::vector<std::pair<int, std::string>> entries =
+			{
+				{ 5, "hello" },
+				{ 2, "world" },
+				{ 7, "Guten Tag" },
+				{ 8, "Dobar dan" }
+			};
+			BidirectionalMap<int, std::string> bm1;
+			for (const auto& item : entries)
+				bm1.Insert(item.first, item.second);
+
+			BidirectionalMap<int, std::string> bm2(bm1);
+
+			Assert::AreEqual(size_t(4), bm2.Size());
+			Assert::IsTrue(bm2.FirstExists(5));
+			Assert::IsTrue(bm2.FirstExists(2));
+			Assert::IsTrue(bm2.FirstExists(7));
+			Assert::IsTrue(bm2.FirstExists(8));
+			Assert::IsTrue(bm2.SecondExists("hello"));
+			Assert::IsTrue(bm2.SecondExists("world"));
+			Assert::IsTrue(bm2.SecondExists("Guten Tag"));
+			Assert::IsTrue(bm2.SecondExists("Dobar dan"));
+			Assert::AreEqual(2, bm2["world"]);
+			Assert::AreEqual(5, bm2["hello"]);
+			Assert::AreEqual(7, bm2["Guten Tag"]);
+			Assert::AreEqual(8, bm2["Dobar dan"]);
 		}
 	};
 }

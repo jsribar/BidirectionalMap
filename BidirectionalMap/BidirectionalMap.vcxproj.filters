@@ -27,12 +27,6 @@
     <ClInclude Include="BidirectionalMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BidirectionalUnorderedMap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BidirectionalTMap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
