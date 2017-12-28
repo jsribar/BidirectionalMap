@@ -21,13 +21,13 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CompareMapBimapAccess.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GenerateRandomStrings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RandomStringGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CompareMapBidirectionalMapAccess.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

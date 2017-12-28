@@ -147,7 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="CompareMapBimapAccess.h" />
+    <ClInclude Include="CompareMapBidirectionalMapAccess.h" />
     <ClInclude Include="GenerateRandomStrings.h" />
     <ClInclude Include="RandomStringGenerator.h" />
     <ClInclude Include="stdafx.h" />

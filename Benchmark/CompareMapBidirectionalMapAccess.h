@@ -32,7 +32,7 @@ void OutputDuration(const std::string& description, const time_point& start, con
 }
 
 template<template<typename... Args> class TBiMap, template<typename... Args> class TMap>
-void CompareMapBiMapAccess()
+void CompareMapBidirectionalMapAccess()
 {
 	constexpr int numOfItems = 5000;
 
