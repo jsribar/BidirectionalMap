@@ -31,8 +31,8 @@ namespace MapSpecial
 		// static_assert(std::is_same<T1, T2>::value == false);
 
 	protected:
-		using Item = std::pair<T1, T2>;
-		using Container = std::forward_list<Item>;
+		using value_type = std::pair<T1, T2>;
+		using Container = std::forward_list<value_type>;
 
 	public:
 		BidirectionalMapBase() = default;
@@ -50,8 +50,8 @@ namespace MapSpecial
 		{
 		}
 
-		BidirectionalMapBase(std::initializer_list<Item> items)
-			: items{ items }
+		BidirectionalMapBase(std::initializer_list<value_type> il)
+			: items{ il }
 		{
 			BuildMaps();
 		}
@@ -70,9 +70,6 @@ namespace MapSpecial
 		{
 			assert(items.size() == map1.size());
 			assert(items.size() == map2.size());
-			// do not perform insertion if any key already exists
-			if (FirstExists(first) || SecondExists(second))
-				return false;
 			return InsertPair(std::forward<T1>(first), std::forward<T2>(second));
 		}
 
@@ -100,7 +97,7 @@ namespace MapSpecial
 			const auto& key1 = map1.find(&first);
 			if (key1 == map1.end())
 				return false;
-			const Item* pItem = key1->second;
+			const value_type* pItem = key1->second;
 			map2.erase(&(pItem->second));
 			map1.erase(key1);
 			items.remove(*pItem);
@@ -112,7 +109,7 @@ namespace MapSpecial
 			const auto& key2 = map2.find(&second);
 			if (key2 == map2.end())
 				return false;
-			const Item* pItem = key2->second;
+			const value_type* pItem = key2->second;
 			map1.erase(&(pItem->first));
 			map2.erase(key2);
 			items.remove(*pItem);
@@ -152,23 +149,27 @@ namespace MapSpecial
 		}
 
 	private:
-		std::list<Item> items;
-		TMap<const T1*, Item*, TMapArgs<T1>...> map1;
-		TMap<const T2*, Item*, TMapArgs<T2>...> map2;
+		std::list<value_type> items;
+		TMap<const T1*, value_type*, TMapArgs<T1>...> map1;
+		TMap<const T2*, value_type*, TMapArgs<T2>...> map2;
 
 		void BuildMaps()
 		{
-			for (Item& item : items)
+			for (value_type& item : items)
 			{
 				map1.emplace(&(item.first), &item);
 				map2.emplace(&(item.second), &item);
 			}
 		}
 
+		template <typename T1, typename T2>
 		bool InsertPair(T1 first, T2 second)
 		{
+			// do not perform insertion if any key already exists
+			if (FirstExists(first) || SecondExists(second))
+				return false;
 			items.emplace_back(std::forward<T1>(first), std::forward<T2>(second));
-			Item& item = items.back();
+			value_type& item = items.back();
 			map1.emplace(&(item.first), &item);
 			map2.emplace(&(item.second), &item);
 
@@ -198,34 +199,44 @@ namespace MapSpecial
 		void ChangeSecond(T1 first, T2 second)
 		{
 			auto item = map1.find(&first)->second;
+			// current second key must be removed from map2
+			map2.erase(&(item->second));
 			// change second value in the pair
 			item->second = std::forward<T2>(second);
-			// current second key must be removed from map2 and new created
-			map2.erase(&(item->second));
+			// new second key must be created
 			map2.emplace(&(item->second), item);
 		}
 
 		void ChangeFirst(T1 first, T2 second)
 		{
 			auto item = map2.find(&second)->second;
+			// current first key must be removed from map1 
+			map1.erase(&(item->first));
 			// change first value in the pair
 			item->first = std::forward<T1>(first);
-			// current first key must be removed from map1 and new created
-			map1.erase(&(item->first));
+			// new first key must be created
 			map1.emplace(&(item->first), item);
 		}
-	};
+	}; // class BidirectionalMapBase
 
 	// specialization for std::map
 	template <typename T1, typename T2>
 	class BidirectionalMap : public BidirectionalMapBase<T1, T2, std::map, DereferencedPointerComparator>
 	{
+	public:
+		BidirectionalMap() = default;
+
+		BidirectionalMap(std::initializer_list<std::pair<T1, T2>> il) : BidirectionalMapBase<T1, T2, std::map, DereferencedPointerComparator>(il) { }
 	};
 
 	// specialization for std::unordered_map
 	template <typename T1, typename T2>
 	class BidirectionalUnorderedMap : public BidirectionalMapBase<T1, T2, std::unordered_map, DereferencedPointerHash, DereferencedPointerEquality>
 	{
+	public:
+		BidirectionalUnorderedMap() = default;
+
+		BidirectionalUnorderedMap(std::initializer_list<std::pair<T1, T2>> il) : BidirectionalMapBase<T1, T2, std::unordered_map, DereferencedPointerHash, DereferencedPointerEquality>(il) { }
 	};
 
 } // namespace MapSpecial

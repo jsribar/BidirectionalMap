@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
-#include <vector>
 #include <utility>
 #include "../BidirectionalMap/BidirectionalMap.h"
 
@@ -221,6 +220,35 @@ namespace UnitTests
 			Assert::IsFalse(bm.SecondExists("world"));
 		}
 
+		BidirectionalUnorderedMap<int, std::string> CreateMap()
+		{
+			BidirectionalUnorderedMap<int, std::string> result;
+			result.Insert(5, "hello");
+			result.Insert(2, "world");
+			result.Insert(7, "Guten Tag");
+			result.Insert(8, "Dobar dan");
+			return result;
+		}
+
+		TEST_METHOD(BidirectionalUnorderedMap_MoveConstructorCreatesNewMap)
+		{
+			BidirectionalUnorderedMap<int, std::string> bm = CreateMap();
+
+			Assert::AreEqual(size_t(4), bm.Size());
+			Assert::IsTrue(bm.FirstExists(5));
+			Assert::IsTrue(bm.FirstExists(2));
+			Assert::IsTrue(bm.FirstExists(7));
+			Assert::IsTrue(bm.FirstExists(8));
+			Assert::IsTrue(bm.SecondExists("hello"));
+			Assert::IsTrue(bm.SecondExists("world"));
+			Assert::IsTrue(bm.SecondExists("Guten Tag"));
+			Assert::IsTrue(bm.SecondExists("Dobar dan"));
+			Assert::AreEqual(2, bm["world"]);
+			Assert::AreEqual(5, bm["hello"]);
+			Assert::AreEqual(7, bm["Guten Tag"]);
+			Assert::AreEqual(8, bm["Dobar dan"]);
+		}
+
 		TEST_METHOD(BidirectionalUnorderedMap_CopyConstructorCreatesNewMap)
 		{
 			std::vector<std::pair<int, std::string>> entries =
@@ -249,6 +277,31 @@ namespace UnitTests
 			Assert::AreEqual(5, bm2["hello"]);
 			Assert::AreEqual(7, bm2["Guten Tag"]);
 			Assert::AreEqual(8, bm2["Dobar dan"]);
+		}
+
+		TEST_METHOD(BidirectionalUnorderedMap_InitializerListConstructorCreatesNewMap)
+		{
+			BidirectionalUnorderedMap<int, std::string> bm
+			{
+				{ 5, "hello" },
+				{ 2, "world" },
+				{ 7, "Guten Tag" },
+				{ 8, "Dobar dan" }
+			};
+
+			Assert::AreEqual(size_t(4), bm.Size());
+			Assert::IsTrue(bm.FirstExists(5));
+			Assert::IsTrue(bm.FirstExists(2));
+			Assert::IsTrue(bm.FirstExists(7));
+			Assert::IsTrue(bm.FirstExists(8));
+			Assert::IsTrue(bm.SecondExists("hello"));
+			Assert::IsTrue(bm.SecondExists("world"));
+			Assert::IsTrue(bm.SecondExists("Guten Tag"));
+			Assert::IsTrue(bm.SecondExists("Dobar dan"));
+			Assert::AreEqual(2, bm["world"]);
+			Assert::AreEqual(5, bm["hello"]);
+			Assert::AreEqual(7, bm["Guten Tag"]);
+			Assert::AreEqual(8, bm["Dobar dan"]);
 		}
 	};
 }
