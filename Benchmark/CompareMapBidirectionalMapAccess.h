@@ -68,7 +68,7 @@ void CompareMapBidirectionalMapAccess(std::vector<std::string> strings)
 
 	// evaluate bidirectional map access
 	for (size_t i = 0; i < strings.size(); ++i)
-		biMap[i];
+		biMap.AtFirst(i);
 
 	now2 = clock.now();
 	OutputDuration("Access bidirectional map members by int   ", now1, now2);
@@ -95,7 +95,7 @@ void CompareMapBidirectionalMapAccess(std::vector<std::string> strings)
 
 	// evaluate bidirectional map reverse access
 	for (const auto& s : strings)
-		biMap[s];
+		biMap.AtSecond(s);
 
 	now2 = clock.now();
 	OutputDuration("Access bidirectional map members by string", now1, now2);
@@ -158,7 +158,7 @@ void CompareMapBidirectionalMapAccess(std::vector<std::string> strings)
 
 	// evaluate bidirectional map access
 	for (const auto& s : strings)
-		biMap2[s];
+		biMap2.AtFirst(s);
 
 	now2 = clock.now();
 	OutputDuration("Access bidirectional map members by string", now1, now2);
@@ -185,7 +185,7 @@ void CompareMapBidirectionalMapAccess(std::vector<std::string> strings)
 
 	// evaluate bidirectional map reverse access
 	for (size_t i = 0; i < strings.size(); ++i)
-		biMap2[i];
+		biMap2.AtSecond(i);
 
 	now2 = clock.now();
 	OutputDuration("Access bidirectional map members by int   ", now1, now2);

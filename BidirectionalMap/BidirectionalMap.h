@@ -48,8 +48,6 @@ namespace MapSpecial
 	template<typename T1, typename T2, template<typename TKey, typename TValue, typename ...Args> class TMap, template<typename T> class ...TMapArgs>
 	class BidirectionalMapBase
 	{
-		// static_assert(std::is_same<T1, T2>::value == false);
-
 	protected:
 		using value_type = std::pair<T1, T2>;
 		using Container = std::forward_list<value_type>;
@@ -98,6 +96,9 @@ namespace MapSpecial
 		{
 			assert(items.size() == map1.size());
 			assert(items.size() == map2.size());
+			// do not perform insertion if any key already exists
+			if (FirstExists(first) || SecondExists(second))
+				return false;
 			return InsertPair(std::forward<T1>(first), std::forward<T2>(second));
 		}
 
@@ -106,6 +107,9 @@ namespace MapSpecial
 		{
 			assert(items.size() == map1.size());
 			assert(items.size() == map2.size());
+			// return false if both keys exist or if none exists
+			if (FirstExists(first) == SecondExists(second))
+				return false;
 			return ChangeValue(std::forward<T1>(first), std::forward<T2>(second));
 		}
 
@@ -120,7 +124,7 @@ namespace MapSpecial
 			assert(map2.size() == 0);
 		}
 
-		bool Remove(const T1& first)
+		bool RemoveFirst(const T1& first)
 		{
 			const auto& key1 = map1.find(&first);
 			if (key1 == map1.end())
@@ -132,7 +136,7 @@ namespace MapSpecial
 			return true;
 		}
 
-		bool Remove(const T2& second)
+		bool RemoveSecond(const T2& second)
 		{
 			const auto& key2 = map2.find(&second);
 			if (key2 == map2.end())
@@ -152,28 +156,66 @@ namespace MapSpecial
 			return items.size();
 		}
 
-		bool Exists(const T1& first) const noexcept
+		bool FirstExists(const T1& first) const noexcept
 		{
 			return map1.find(&first) != map1.end();
 		}
 
-		bool Exists(const T2& second) const noexcept
+		bool SecondExists(const T2& second) const noexcept
 		{
 			return map2.find(&second) != map2.end();
 		}
 
-		const T2& operator[](const T1& first) const
+		const T2& AtFirst(const T1& first) const
 		{
 			assert(items.size() == map1.size());
 			assert(items.size() == map2.size());
 			return map1.at(&first)->second;
 		}
 
-		const T1& operator[](const T2& second) const
+		const T1& AtSecond(const T2& second) const
 		{
 			assert(items.size() == map1.size());
 			assert(items.size() == map2.size());
 			return map2.at(&second)->first;
+		}
+
+		// methods and operators available only when T1 and T2 are different types
+
+		typename std::enable_if<!std::is_same<T1, T2>::value, const T2&>::type
+		operator[](const T1& first) const
+		{
+			return AtFirst(first);
+		}
+
+		typename std::enable_if<!std::is_same<T1, T2>::value, const T1&>::type
+		operator[](const T2& second) const
+		{
+			return AtSecond(second);
+		}
+
+		typename std::enable_if<!std::is_same<T1, T2>::value, bool>::type
+		Remove(const T1& first)
+		{
+			return RemoveFirst(first);
+		}
+
+		typename std::enable_if<!std::is_same<T1, T2>::value, bool>::type
+		Remove(const T2& second)
+		{
+			return RemoveSecond(second);
+		}
+
+		typename std::enable_if<!std::is_same<T1, T2>::value, bool>::type
+		Exists(const T1& first) const noexcept
+		{
+			return FirstExists(first);
+		}
+
+		typename std::enable_if<!std::is_same<T1, T2>::value, bool>::type
+		Exists(const T2& second) const noexcept
+		{
+			return SecondExists(second);
 		}
 
 	private:
@@ -193,9 +235,6 @@ namespace MapSpecial
 		template <typename T1, typename T2>
 		bool InsertPair(T1 first, T2 second)
 		{
-			// do not perform insertion if any key already exists
-			if (Exists(first) || Exists(second))
-				return false;
 			items.emplace_back(std::forward<T1>(first), std::forward<T2>(second));
 			value_type& item = items.back();
 			map1.emplace(&(item.first), &item);
@@ -209,11 +248,8 @@ namespace MapSpecial
 		template <typename T1, typename T2>
 		bool ChangeValue(T1 first, T2 second)
 		{
-			// return false if both keys exist or if none exists
-			if (Exists(first) == Exists(second))
-				return false;
 			// if first key already exists, then second will be changed
-			if (Exists(first))
+			if (FirstExists(first))
 				ChangeSecond(std::forward<T1>(first), std::forward<T2>(second));
 			// if second key already exists, then first will be changed
 			else
