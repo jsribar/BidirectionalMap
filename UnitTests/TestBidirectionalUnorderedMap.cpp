@@ -22,8 +22,8 @@ namespace UnitTests
 			bm.Insert(first, second);
 
 			Assert::AreEqual(size_t(1), bm.Size());
-			Assert::AreEqual(second, bm[first]);
-			Assert::AreEqual(first, bm[second]);
+			Assert::AreEqual(second, bm.AtFirst(first));
+			Assert::AreEqual(first, bm.AtSecond(second));
 		}
 
 		TEST_METHOD(BidirectionalUnorderedMap_InsertMethodReturnsTrueIfPairHasBeenAddedSuccessfully)
@@ -51,8 +51,8 @@ namespace UnitTests
 			while (i-- > 0)
 			{
 				const auto& entry = entries[i];
-				Assert::AreEqual(entry.first, bm[entry.second]);
-				Assert::AreEqual(entry.second, bm[entry.first]);
+				Assert::AreEqual(entry.first, bm.AtSecond(entry.second));
+				Assert::AreEqual(entry.second, bm.AtFirst(entry.first));
 			}
 		}
 
@@ -66,8 +66,8 @@ namespace UnitTests
 			bm.Insert(first, "world");
 
 			Assert::AreEqual(size_t(1), bm.Size());
-			Assert::AreEqual(second, bm[first]);
-			Assert::AreEqual(first, bm[second]);
+			Assert::AreEqual(second, bm.AtFirst(first));
+			Assert::AreEqual(first, bm.AtSecond(second));
 		}
 
 		TEST_METHOD(BidirectionalUnorderedMap_InsertMethodDoesNotAddPairIfSecondValueAlreadyExists)
@@ -80,8 +80,8 @@ namespace UnitTests
 			bm.Insert(2, second);
 
 			Assert::AreEqual(size_t(1), bm.Size());
-			Assert::AreEqual(second, bm[first]);
-			Assert::AreEqual(first, bm[second]);
+			Assert::AreEqual(second, bm.AtFirst(first));
+			Assert::AreEqual(first, bm.AtSecond(second));
 		}
 
 		TEST_METHOD(BidirectionalUnorderedMap_InsertMethodReturnsFalseIfPairHasNotBeenAddedSuccessfully)
@@ -105,8 +105,8 @@ namespace UnitTests
 			bm.Change(newFirst, second);
 
 			Assert::AreEqual(size_t(1), bm.Size());
-			Assert::AreEqual(newFirst, bm[second]);
-			Assert::AreEqual(second, bm[newFirst]);
+			Assert::AreEqual(newFirst, bm.AtSecond(second));
+			Assert::AreEqual(second, bm.AtFirst(newFirst));
 		}
 
 		TEST_METHOD(BidirectionalUnorderedMap_ChangeMethodChangesSecondValueForExistingPairThatHasSameFirstValue)
@@ -120,8 +120,8 @@ namespace UnitTests
 			bm.Change(first, newSecond);
 
 			Assert::AreEqual(size_t(1), bm.Size());
-			Assert::AreEqual(newSecond, bm[first]);
-			Assert::AreEqual(first, bm[newSecond]);
+			Assert::AreEqual(newSecond, bm.AtFirst(first));
+			Assert::AreEqual(first, bm.AtSecond(newSecond));
 		}
 
 		TEST_METHOD(BidirectionalUnorderedMap_ChangeMethodDoesNotAddNewPairIfNoPairHasSameFirstOrSecondValue)
@@ -188,16 +188,16 @@ namespace UnitTests
 			Assert::AreEqual(size_t(3), bm.Size());
 			Assert::IsFalse(bm.FirstExists(5));
 			Assert::IsFalse(bm.SecondExists("hello"));
-			Assert::AreEqual(2, bm["world"]);
-			Assert::AreEqual(7, bm["Guten Tag"]);
+			Assert::AreEqual(2, bm.AtSecond("world"));
+			Assert::AreEqual(7, bm.AtSecond("Guten Tag"));
 
 			bm.RemoveSecond("Guten Tag");
 
 			Assert::AreEqual(size_t(2), bm.Size());
 			Assert::IsFalse(bm.SecondExists("Guten Tag"));
 			Assert::IsFalse(bm.FirstExists(7));
-			Assert::AreEqual(2, bm["world"]);
-			Assert::AreEqual(8, bm["Dobar dan"]);
+			Assert::AreEqual(2, bm.AtSecond("world"));
+			Assert::AreEqual(8, bm.AtSecond("Dobar dan"));
 		}
 
 		TEST_METHOD(BidirectionalUnorderedMap_ExistsReturnsTrueIfAPairWithValueProvidedExists)
@@ -244,10 +244,10 @@ namespace UnitTests
 			Assert::IsTrue(bm2.SecondExists("world"));
 			Assert::IsTrue(bm2.SecondExists("Guten Tag"));
 			Assert::IsTrue(bm2.SecondExists("Dobar dan"));
-			Assert::AreEqual(2, bm2["world"]);
-			Assert::AreEqual(5, bm2["hello"]);
-			Assert::AreEqual(7, bm2["Guten Tag"]);
-			Assert::AreEqual(8, bm2["Dobar dan"]);
+			Assert::AreEqual(2, bm2.AtSecond("world"));
+			Assert::AreEqual(5, bm2.AtSecond("hello"));
+			Assert::AreEqual(7, bm2.AtSecond("Guten Tag"));
+			Assert::AreEqual(8, bm2.AtSecond("Dobar dan"));
 		}
 
 		BidirectionalUnorderedMap<int, std::string> CreateMap()
@@ -273,10 +273,10 @@ namespace UnitTests
 			Assert::IsTrue(bm.SecondExists("world"));
 			Assert::IsTrue(bm.SecondExists("Guten Tag"));
 			Assert::IsTrue(bm.SecondExists("Dobar dan"));
-			Assert::AreEqual(2, bm["world"]);
-			Assert::AreEqual(5, bm["hello"]);
-			Assert::AreEqual(7, bm["Guten Tag"]);
-			Assert::AreEqual(8, bm["Dobar dan"]);
+			Assert::AreEqual(2, bm.AtSecond("world"));
+			Assert::AreEqual(5, bm.AtSecond("hello"));
+			Assert::AreEqual(7, bm.AtSecond("Guten Tag"));
+			Assert::AreEqual(8, bm.AtSecond("Dobar dan"));
 		}
 
 		TEST_METHOD(BidirectionalUnorderedMap_MoveAssignmentMovesMapData)
@@ -293,10 +293,10 @@ namespace UnitTests
 			Assert::IsTrue(bm.SecondExists("world"));
 			Assert::IsTrue(bm.SecondExists("Guten Tag"));
 			Assert::IsTrue(bm.SecondExists("Dobar dan"));
-			Assert::AreEqual(2, bm["world"]);
-			Assert::AreEqual(5, bm["hello"]);
-			Assert::AreEqual(7, bm["Guten Tag"]);
-			Assert::AreEqual(8, bm["Dobar dan"]);
+			Assert::AreEqual(2, bm.AtSecond("world"));
+			Assert::AreEqual(5, bm.AtSecond("hello"));
+			Assert::AreEqual(7, bm.AtSecond("Guten Tag"));
+			Assert::AreEqual(8, bm.AtSecond("Dobar dan"));
 		}
 
 		TEST_METHOD(BidirectionalUnorderedMap_InitializerListConstructorCreatesNewMap)
@@ -318,10 +318,76 @@ namespace UnitTests
 			Assert::IsTrue(bm.SecondExists("world"));
 			Assert::IsTrue(bm.SecondExists("Guten Tag"));
 			Assert::IsTrue(bm.SecondExists("Dobar dan"));
-			Assert::AreEqual(2, bm["world"]);
-			Assert::AreEqual(5, bm["hello"]);
-			Assert::AreEqual(7, bm["Guten Tag"]);
-			Assert::AreEqual(8, bm["Dobar dan"]);
+			Assert::AreEqual(2, bm.AtSecond("world"));
+			Assert::AreEqual(5, bm.AtSecond("hello"));
+			Assert::AreEqual(7, bm.AtSecond("Guten Tag"));
+			Assert::AreEqual(8, bm.AtSecond("Dobar dan"));
+		}
+
+		TEST_METHOD(BidirectionalUnorderedMap_ForDifferentTypesIndexOperatorWithFirstValueReturnsSecondValue)
+		{
+			BidirectionalUnorderedMap<int, std::string> bm
+			{
+				{ 5, "hello" },
+				{ 2, "world" },
+				{ 7, "Guten Tag" },
+				{ 8, "Dobar dan" }
+			};
+
+			Assert::AreEqual(bm.AtFirst(5), bm[5]);
+			Assert::AreEqual(bm.AtFirst(2), bm[2]);
+			Assert::AreEqual(bm.AtFirst(7), bm[7]);
+			Assert::AreEqual(bm.AtFirst(8), bm[8]);
+		}
+
+		TEST_METHOD(BidirectionalUnorderedMap_ForDifferentTypesIndexOperatorWithSecondValueReturnsFirstValue)
+		{
+			BidirectionalUnorderedMap<int, std::string> bm
+			{
+				{ 5, "hello" },
+				{ 2, "world" },
+				{ 7, "Guten Tag" },
+				{ 8, "Dobar dan" }
+			};
+
+			Assert::AreEqual(bm.AtSecond("hello"), bm["hello"]);
+			Assert::AreEqual(bm.AtSecond("world"), bm["world"]);
+			Assert::AreEqual(bm.AtSecond("Guten Tag"), bm["Guten Tag"]);
+			Assert::AreEqual(bm.AtSecond("Dobar dan"), bm["Dobar dan"]);
+		}
+
+		TEST_METHOD(BidirectionalUnorderedMap_ForDifferentTypesRemoveMethodCanBeCalledWithEitherFirstOrSecondValue)
+		{
+			BidirectionalUnorderedMap<int, std::string> bm
+			{
+				{ 5, "hello" },
+				{ 2, "world" },
+				{ 7, "Guten Tag" },
+				{ 8, "Dobar dan" }
+			};
+
+			bm.Remove("Guten Tag");
+
+			Assert::IsFalse(bm.SecondExists("Guten Tag"));
+
+			bm.Remove(8);
+
+			Assert::IsFalse(bm.FirstExists(8));
+		}
+
+		TEST_METHOD(BidirectionalUnorderedMap_ForDifferentTypesExistsMethodCanBeCalledWithEitherFirstOrSecondValue)
+		{
+			BidirectionalUnorderedMap<int, std::string> bm
+			{
+				{ 5, "hello" },
+				{ 2, "world" },
+				{ 8, "Dobar dan" }
+			};
+
+			Assert::AreEqual(bm.SecondExists("Guten Tag"), bm.Exists("Guten Tag"));
+			Assert::AreEqual(bm.FirstExists(7), bm.Exists(7));
+			Assert::AreEqual(bm.SecondExists("hello"), bm.Exists("hello"));
+			Assert::AreEqual(bm.FirstExists(5), bm.Exists(5));
 		}
 	};
 }
