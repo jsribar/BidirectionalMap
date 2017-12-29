@@ -29,7 +29,7 @@ void CompareMapBidirectionalMapAccess(std::vector<std::string> strings)
 	typedef intString_bimap::value_type positionIntString;
 	intString_bimap boostBiMap;
 
-	for (int i = 0; i < strings.size(); ++i)
+	for (size_t i = 0; i < strings.size(); ++i)
 		boostBiMap.insert(positionIntString(i, strings[i]));
 
 	auto now2 = clock.now();
@@ -39,7 +39,7 @@ void CompareMapBidirectionalMapAccess(std::vector<std::string> strings)
 
 	// evaluate bidirectional map generation
 	TBiMap<int, std::string> biMap;
-	for (int i = 0; i < strings.size(); ++i)
+	for (size_t i = 0; i < strings.size(); ++i)
 		biMap.Insert(i, strings[i]);
 
 	now2 = clock.now();
@@ -49,7 +49,7 @@ void CompareMapBidirectionalMapAccess(std::vector<std::string> strings)
 
 	// evaluate ordinary map generation
 	TMap<int, std::string> map;
-	for (int i = 0; i < strings.size(); ++i)
+	for (size_t i = 0; i < strings.size(); ++i)
 		map.emplace(i, strings[i]);
 
 	now2 = clock.now();
@@ -58,7 +58,7 @@ void CompareMapBidirectionalMapAccess(std::vector<std::string> strings)
 	now1 = clock.now();
 
 	// evaluate boos bidirectional map access
-	for (int i = 0; i < strings.size(); ++i)
+	for (size_t i = 0; i < strings.size(); ++i)
 		boostBiMap.left.at(i);
 
 	now2 = clock.now();
@@ -67,7 +67,7 @@ void CompareMapBidirectionalMapAccess(std::vector<std::string> strings)
 	now1 = clock.now();
 
 	// evaluate bidirectional map access
-	for (int i = 0; i < strings.size(); ++i)
+	for (size_t i = 0; i < strings.size(); ++i)
 		biMap[i];
 
 	now2 = clock.now();
@@ -76,7 +76,7 @@ void CompareMapBidirectionalMapAccess(std::vector<std::string> strings)
 	now1 = clock.now();
 
 	// evaluate ordinary map access
-	for (int i = 0; i < strings.size(); ++i)
+	for (size_t i = 0; i < strings.size(); ++i)
 		map[i];
 
 	now2 = clock.now();
@@ -119,14 +119,17 @@ void CompareMapBidirectionalMapAccess(std::vector<std::string> strings)
 	typedef stringInt_bimap::value_type positionStringInt;
 	stringInt_bimap boostBiMap2;
 
-	for (int i = 0; i < strings.size(); ++i)
+	for (size_t i = 0; i < strings.size(); ++i)
 		boostBiMap2.insert(positionStringInt(strings[i], i));
+
+	now2 = clock.now();
+	OutputDuration("Generate boost bimap                      ", now1, now2);
 
 	now1 = clock.now();
 
 	// evaluate bidirectional map generation
 	TBiMap<std::string, int> biMap2;
-	for (int i = 0; i < strings.size(); ++i)
+	for (size_t i = 0; i < strings.size(); ++i)
 		biMap2.Insert(strings[i], i);
 
 	now2 = clock.now();
@@ -136,7 +139,7 @@ void CompareMapBidirectionalMapAccess(std::vector<std::string> strings)
 
 	// evaluate ordinary map generation
 	TMap<std::string, int> map2;
-	for (int i = 0; i < strings.size(); ++i)
+	for (size_t i = 0; i < strings.size(); ++i)
 		map2.emplace(strings[i], i);
 
 	now2 = clock.now();
@@ -172,7 +175,7 @@ void CompareMapBidirectionalMapAccess(std::vector<std::string> strings)
 	now1 = clock.now();
 
 	// evaluate boost bimap reverse access
-	for (int i = 0; i < strings.size(); ++i)
+	for (size_t i = 0; i < strings.size(); ++i)
 		boostBiMap2.right.at(i);
 
 	now2 = clock.now();
@@ -181,7 +184,7 @@ void CompareMapBidirectionalMapAccess(std::vector<std::string> strings)
 	now1 = clock.now();
 
 	// evaluate bidirectional map reverse access
-	for (int i = 0; i < strings.size(); ++i)
+	for (size_t i = 0; i < strings.size(); ++i)
 		biMap2[i];
 
 	now2 = clock.now();
@@ -190,7 +193,7 @@ void CompareMapBidirectionalMapAccess(std::vector<std::string> strings)
 	now1 = clock.now();
 
 	// evaluate bidirectional map reverse access
-	for (int i = 0; i < strings.size(); ++i)
+	for (size_t i = 0; i < strings.size(); ++i)
 		std::find_if(map2.cbegin(), map2.cend(), [&](const std::pair<std::string, int>& item) { return item.second == i; })->first;
 
 	now2 = clock.now();

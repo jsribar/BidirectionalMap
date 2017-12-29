@@ -164,12 +164,6 @@
     </ClCompile>
     <ClCompile Include="TestBidirectionalMap.cpp" />
     <ClCompile Include="TestBidirectionalUnorderedMap.cpp" />
-    <ClCompile Include="TestIntStringBidirectionalMap.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\BidirectionalMap\BidirectionalMap.vcxproj">
-      <Project>{725f4555-f891-4faf-842d-46bc8f2e0deb}</Project>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

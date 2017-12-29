@@ -186,16 +186,16 @@ namespace UnitTests
 			bm.Remove(5);
 
 			Assert::AreEqual(size_t(3), bm.Size());
-			Assert::IsFalse(bm.FirstExists(5));
-			Assert::IsFalse(bm.SecondExists("hello"));
+			Assert::IsFalse(bm.Exists(5));
+			Assert::IsFalse(bm.Exists("hello"));
 			Assert::AreEqual(2, bm["world"]);
 			Assert::AreEqual(7, bm["Guten Tag"]);
 
 			bm.Remove("Guten Tag");
 
 			Assert::AreEqual(size_t(2), bm.Size());
-			Assert::IsFalse(bm.SecondExists("Guten Tag"));
-			Assert::IsFalse(bm.FirstExists(7));
+			Assert::IsFalse(bm.Exists("Guten Tag"));
+			Assert::IsFalse(bm.Exists(7));
 			Assert::AreEqual(2, bm["world"]);
 			Assert::AreEqual(8, bm["Dobar dan"]);
 		}
@@ -207,8 +207,8 @@ namespace UnitTests
 			BidirectionalUnorderedMap<int, std::string> bm;
 			bm.Insert(first, second);
 
-			Assert::IsTrue(bm.FirstExists(first));
-			Assert::IsTrue(bm.SecondExists(second));
+			Assert::IsTrue(bm.Exists(first));
+			Assert::IsTrue(bm.Exists(second));
 		}
 
 		TEST_METHOD(BidirectionalUnorderedMap_ExistsReturnsFalseIfNoPairWithValueProvidedExists)
@@ -216,8 +216,8 @@ namespace UnitTests
 			BidirectionalUnorderedMap<int, std::string> bm;
 			bm.Insert(1, "hello");
 
-			Assert::IsFalse(bm.FirstExists(2));
-			Assert::IsFalse(bm.SecondExists("world"));
+			Assert::IsFalse(bm.Exists(2));
+			Assert::IsFalse(bm.Exists("world"));
 		}
 
 		TEST_METHOD(BidirectionalUnorderedMap_CopyConstructorCreatesNewMap)
@@ -236,14 +236,14 @@ namespace UnitTests
 			BidirectionalUnorderedMap<int, std::string> bm2(bm1);
 
 			Assert::AreEqual(size_t(4), bm2.Size());
-			Assert::IsTrue(bm2.FirstExists(5));
-			Assert::IsTrue(bm2.FirstExists(2));
-			Assert::IsTrue(bm2.FirstExists(7));
-			Assert::IsTrue(bm2.FirstExists(8));
-			Assert::IsTrue(bm2.SecondExists("hello"));
-			Assert::IsTrue(bm2.SecondExists("world"));
-			Assert::IsTrue(bm2.SecondExists("Guten Tag"));
-			Assert::IsTrue(bm2.SecondExists("Dobar dan"));
+			Assert::IsTrue(bm2.Exists(5));
+			Assert::IsTrue(bm2.Exists(2));
+			Assert::IsTrue(bm2.Exists(7));
+			Assert::IsTrue(bm2.Exists(8));
+			Assert::IsTrue(bm2.Exists("hello"));
+			Assert::IsTrue(bm2.Exists("world"));
+			Assert::IsTrue(bm2.Exists("Guten Tag"));
+			Assert::IsTrue(bm2.Exists("Dobar dan"));
 			Assert::AreEqual(2, bm2["world"]);
 			Assert::AreEqual(5, bm2["hello"]);
 			Assert::AreEqual(7, bm2["Guten Tag"]);
@@ -265,14 +265,14 @@ namespace UnitTests
 			BidirectionalUnorderedMap<int, std::string> bm = CreateMap();
 
 			Assert::AreEqual(size_t(4), bm.Size());
-			Assert::IsTrue(bm.FirstExists(5));
-			Assert::IsTrue(bm.FirstExists(2));
-			Assert::IsTrue(bm.FirstExists(7));
-			Assert::IsTrue(bm.FirstExists(8));
-			Assert::IsTrue(bm.SecondExists("hello"));
-			Assert::IsTrue(bm.SecondExists("world"));
-			Assert::IsTrue(bm.SecondExists("Guten Tag"));
-			Assert::IsTrue(bm.SecondExists("Dobar dan"));
+			Assert::IsTrue(bm.Exists(5));
+			Assert::IsTrue(bm.Exists(2));
+			Assert::IsTrue(bm.Exists(7));
+			Assert::IsTrue(bm.Exists(8));
+			Assert::IsTrue(bm.Exists("hello"));
+			Assert::IsTrue(bm.Exists("world"));
+			Assert::IsTrue(bm.Exists("Guten Tag"));
+			Assert::IsTrue(bm.Exists("Dobar dan"));
 			Assert::AreEqual(2, bm["world"]);
 			Assert::AreEqual(5, bm["hello"]);
 			Assert::AreEqual(7, bm["Guten Tag"]);
@@ -285,14 +285,14 @@ namespace UnitTests
 			bm = CreateMap();
 
 			Assert::AreEqual(size_t(4), bm.Size());
-			Assert::IsTrue(bm.FirstExists(5));
-			Assert::IsTrue(bm.FirstExists(2));
-			Assert::IsTrue(bm.FirstExists(7));
-			Assert::IsTrue(bm.FirstExists(8));
-			Assert::IsTrue(bm.SecondExists("hello"));
-			Assert::IsTrue(bm.SecondExists("world"));
-			Assert::IsTrue(bm.SecondExists("Guten Tag"));
-			Assert::IsTrue(bm.SecondExists("Dobar dan"));
+			Assert::IsTrue(bm.Exists(5));
+			Assert::IsTrue(bm.Exists(2));
+			Assert::IsTrue(bm.Exists(7));
+			Assert::IsTrue(bm.Exists(8));
+			Assert::IsTrue(bm.Exists("hello"));
+			Assert::IsTrue(bm.Exists("world"));
+			Assert::IsTrue(bm.Exists("Guten Tag"));
+			Assert::IsTrue(bm.Exists("Dobar dan"));
 			Assert::AreEqual(2, bm["world"]);
 			Assert::AreEqual(5, bm["hello"]);
 			Assert::AreEqual(7, bm["Guten Tag"]);
@@ -310,14 +310,14 @@ namespace UnitTests
 			};
 
 			Assert::AreEqual(size_t(4), bm.Size());
-			Assert::IsTrue(bm.FirstExists(5));
-			Assert::IsTrue(bm.FirstExists(2));
-			Assert::IsTrue(bm.FirstExists(7));
-			Assert::IsTrue(bm.FirstExists(8));
-			Assert::IsTrue(bm.SecondExists("hello"));
-			Assert::IsTrue(bm.SecondExists("world"));
-			Assert::IsTrue(bm.SecondExists("Guten Tag"));
-			Assert::IsTrue(bm.SecondExists("Dobar dan"));
+			Assert::IsTrue(bm.Exists(5));
+			Assert::IsTrue(bm.Exists(2));
+			Assert::IsTrue(bm.Exists(7));
+			Assert::IsTrue(bm.Exists(8));
+			Assert::IsTrue(bm.Exists("hello"));
+			Assert::IsTrue(bm.Exists("world"));
+			Assert::IsTrue(bm.Exists("Guten Tag"));
+			Assert::IsTrue(bm.Exists("Dobar dan"));
 			Assert::AreEqual(2, bm["world"]);
 			Assert::AreEqual(5, bm["hello"]);
 			Assert::AreEqual(7, bm["Guten Tag"]);

@@ -132,12 +132,12 @@ namespace MapSpecial
 			return items.size();
 		}
 
-		bool FirstExists(const T1& first) const noexcept
+		bool Exists(const T1& first) const noexcept
 		{
 			return map1.find(&first) != map1.end();
 		}
 
-		bool SecondExists(const T2& second) const noexcept
+		bool Exists(const T2& second) const noexcept
 		{
 			return map2.find(&second) != map2.end();
 		}
@@ -174,7 +174,7 @@ namespace MapSpecial
 		bool InsertPair(T1 first, T2 second)
 		{
 			// do not perform insertion if any key already exists
-			if (FirstExists(first) || SecondExists(second))
+			if (Exists(first) || Exists(second))
 				return false;
 			items.emplace_back(std::forward<T1>(first), std::forward<T2>(second));
 			value_type& item = items.back();
@@ -190,10 +190,10 @@ namespace MapSpecial
 		bool ChangeValue(T1 first, T2 second)
 		{
 			// return false if both keys exist or if none exists
-			if (FirstExists(first) == SecondExists(second))
+			if (Exists(first) == Exists(second))
 				return false;
 			// if first key already exists, then second will be changed
-			if (FirstExists(first))
+			if (Exists(first))
 				ChangeSecond(std::forward<T1>(first), std::forward<T2>(second));
 			// if second key already exists, then first will be changed
 			else
