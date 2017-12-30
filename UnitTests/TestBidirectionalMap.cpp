@@ -28,14 +28,14 @@ namespace UnitTests
 
 		TEST_METHOD(BidirectionalMap_InsertMethodAddsNewPairForSameValueTypes)
 		{
-			//BidirectionalMap<int, int> bm;
-			//Assert::AreEqual(size_t(0), bm.Size());
+			BidirectionalMap<int, int> bm;
+			Assert::AreEqual(size_t(0), bm.Size());
 
-			//bm.Insert(1, 101);
+			bm.Insert(1, 101);
 
-			//Assert::AreEqual(size_t(1), bm.Size());
-			//Assert::AreEqual(101, bm.AtFirst(1));
-			//Assert::AreEqual(1, bm.AtSecond(101));
+			Assert::AreEqual(size_t(1), bm.Size());
+			Assert::AreEqual(101, bm.AtFirst(1));
+			Assert::AreEqual(1, bm.AtSecond(101));
 		}
 
 		TEST_METHOD(BidirectionalMap_InsertMethodReturnsTrueIfPairHasBeenAddedSuccessfully)

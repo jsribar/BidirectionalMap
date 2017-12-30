@@ -180,40 +180,40 @@ namespace MapSpecial
 			return map2.at(&second)->first;
 		}
 
-		// methods and operators available only when T1 and T2 are different types
+		// overloaded methods and operators available only when T1 and T2 are different types
 
-		typename std::enable_if<!std::is_same<T1, T2>::value, const T2&>::type
-		operator[](const T1& first) const
+		const T2& operator[](const T1& first) const
 		{
 			return AtFirst(first);
 		}
 
-		typename std::enable_if<!std::is_same<T1, T2>::value, const T1&>::type
-		operator[](const T2& second) const
+		template <typename Q = T1, typename R = T2>
+		typename std::enable_if<!std::is_same<Q, R>::value, const Q&>::type
+		operator[](const R& second) const
 		{
 			return AtSecond(second);
 		}
 
-		typename std::enable_if<!std::is_same<T1, T2>::value, bool>::type
-		Remove(const T1& first)
+		bool Remove(const T1& first)
 		{
 			return RemoveFirst(first);
 		}
 
-		typename std::enable_if<!std::is_same<T1, T2>::value, bool>::type
-		Remove(const T2& second)
+		template <typename Q = T1, typename R = T2>
+		typename std::enable_if<!std::is_same<Q, R>::value, bool>::type
+		Remove(const R& second)
 		{
 			return RemoveSecond(second);
 		}
 
-		typename std::enable_if<!std::is_same<T1, T2>::value, bool>::type
-		Exists(const T1& first) const noexcept
+		bool Exists(const T1& first) const noexcept
 		{
 			return FirstExists(first);
 		}
 
-		typename std::enable_if<!std::is_same<T1, T2>::value, bool>::type
-		Exists(const T2& second) const noexcept
+		template <typename Q = T1, typename R = T2>
+		typename std::enable_if<!std::is_same<Q, R>::value, bool>::type
+		Exists(const R& second) const noexcept
 		{
 			return SecondExists(second);
 		}
