@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 /*
 Copyright(c) 2017 Julijan Šribar
@@ -21,7 +21,7 @@ freely, subject to the following restrictions :
 */
 
 #include <utility>
-#include <forward_list>
+#include <list>
 #include <map>
 #include <unordered_map>
 #include <cassert>
@@ -50,7 +50,7 @@ namespace MapSpecial
 	{
 	protected:
 		using value_type = std::pair<T1, T2>;
-		using Container = std::forward_list<value_type>;
+		using Container = std::list<value_type>;
 
 	public:
 		BidirectionalMapBase() = default;
@@ -91,26 +91,26 @@ namespace MapSpecial
 			return *this;
 		}
 
-		template <typename T1, typename T2>
-		bool Insert(T1 first, T2 second)
+		template <typename Q, typename R>
+		bool Insert(Q first, R second)
 		{
 			assert(items.size() == map1.size());
 			assert(items.size() == map2.size());
 			// do not perform insertion if any key already exists
 			if (FirstExists(first) || SecondExists(second))
 				return false;
-			return InsertPair(std::forward<T1>(first), std::forward<T2>(second));
+			return InsertPair(std::forward<Q>(first), std::forward<R>(second));
 		}
 
-		template <typename T1, typename T2>
-		bool Change(T1 first, T2 second)
+		template <typename Q, typename R>
+		bool Change(Q first, R second)
 		{
 			assert(items.size() == map1.size());
 			assert(items.size() == map2.size());
 			// return false if both keys exist or if none exists
 			if (FirstExists(first) == SecondExists(second))
 				return false;
-			return ChangeValue(std::forward<T1>(first), std::forward<T2>(second));
+			return ChangeValue(std::forward<Q>(first), std::forward<R>(second));
 		}
 
 		void Clear() noexcept
@@ -188,8 +188,8 @@ namespace MapSpecial
 		}
 
 		template <typename Q = T1, typename R = T2>
-		typename std::enable_if<!std::is_same<Q, R>::value, const Q&>::type
-		operator[](const R& second) const
+		typename std::enable_if<std::is_same<Q, R>::value == false, const Q&>::type
+		operator[](const T2& second) const
 		{
 			return AtSecond(second);
 		}
@@ -201,7 +201,7 @@ namespace MapSpecial
 
 		template <typename Q = T1, typename R = T2>
 		typename std::enable_if<!std::is_same<Q, R>::value, bool>::type
-		Remove(const R& second)
+		Remove(const T2& second)
 		{
 			return RemoveSecond(second);
 		}
@@ -213,13 +213,13 @@ namespace MapSpecial
 
 		template <typename Q = T1, typename R = T2>
 		typename std::enable_if<!std::is_same<Q, R>::value, bool>::type
-		Exists(const R& second) const noexcept
+		Exists(const T2& second) const noexcept
 		{
 			return SecondExists(second);
 		}
 
 	private:
-		std::list<value_type> items;
+		Container items;
 		TMap<const T1*, value_type*, TMapArgs<T1>...> map1;
 		TMap<const T2*, value_type*, TMapArgs<T2>...> map2;
 
@@ -232,10 +232,10 @@ namespace MapSpecial
 			}
 		}
 
-		template <typename T1, typename T2>
-		bool InsertPair(T1 first, T2 second)
+		template <typename Q, typename R>
+		bool InsertPair(Q first, R second)
 		{
-			items.emplace_back(std::forward<T1>(first), std::forward<T2>(second));
+			items.emplace_back(std::forward<Q>(first), std::forward<R>(second));
 			value_type& item = items.back();
 			map1.emplace(&(item.first), &item);
 			map2.emplace(&(item.second), &item);
@@ -245,15 +245,15 @@ namespace MapSpecial
 			return true;
 		}
 
-		template <typename T1, typename T2>
-		bool ChangeValue(T1 first, T2 second)
+		template <typename Q, typename R>
+		bool ChangeValue(Q first, R second)
 		{
 			// if first key already exists, then second will be changed
 			if (FirstExists(first))
-				ChangeSecond(std::forward<T1>(first), std::forward<T2>(second));
+				ChangeSecond(std::forward<Q>(first), std::forward<R>(second));
 			// if second key already exists, then first will be changed
 			else
-				ChangeFirst(std::forward<T1>(first), std::forward<T2>(second));
+				ChangeFirst(std::forward<Q>(first), std::forward<R>(second));
 
 			assert(items.size() == map1.size());
 			assert(items.size() == map2.size());
@@ -274,7 +274,7 @@ namespace MapSpecial
 		void ChangeFirst(T1 first, T2 second)
 		{
 			auto item = map2.find(&second)->second;
-			// current first key must be removed from map1 
+			// current first key must be removed from map1
 			map1.erase(&(item->first));
 			// change first value in the pair
 			item->first = std::forward<T1>(first);
