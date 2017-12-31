@@ -368,6 +368,73 @@ namespace UnitTests
 			Assert::AreEqual(bm.AtSecond("Dobar dan"), bm["Dobar dan"]);
 		}
 
+		TEST_METHOD(BidirectionalMap_AtFirstThrows_out_of_range_ExceptionForNonExistentFirstKey)
+		{
+			BidirectionalMap<int, int> bm
+			{
+				{ 5, 505 },
+				{ 2, 202 },
+			};
+
+			Assert::AreEqual(505, bm.AtFirst(5));
+
+			try
+			{
+				bm.AtFirst(6);
+				Assert::Fail();
+			}
+			catch (std::out_of_range&)
+			{
+			}
+		}
+
+		TEST_METHOD(BidirectionalMap_AtSecondThrows_out_of_range_ExceptionForNonExistentFirstKey)
+		{
+			BidirectionalMap<int, int> bm
+			{
+				{ 5, 505 },
+				{ 2, 202 },
+			};
+
+			Assert::AreEqual(2, bm.AtSecond(202));
+
+			try
+			{
+				bm.AtSecond(101);
+				Assert::Fail();
+			}
+			catch (std::out_of_range&)
+			{
+			}
+		}
+
+		TEST_METHOD(BidirectionalMap_IndexOperatorThrows_out_of_range_ExceptionForNonExistentKey)
+		{
+			BidirectionalMap<int, std::string> bm
+			{
+				{ 5, "hello" },
+				{ 2, "world" },
+			};
+
+			try
+			{
+				bm[6];
+				Assert::Fail();
+			}
+			catch (std::out_of_range&)
+			{
+			}
+
+			try
+			{
+				bm["Guten Tag"];
+				Assert::Fail();
+			}
+			catch (std::out_of_range&)
+			{
+			}
+		}
+
 		TEST_METHOD(BidirectionalMap_ForDifferentTypesRemoveMethodCanBeCalledWithEitherFirstOrSecondValue)
 		{
 			BidirectionalMap<int, std::string> bm
