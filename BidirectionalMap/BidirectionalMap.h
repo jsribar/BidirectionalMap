@@ -126,24 +126,24 @@ namespace MapSpecial
 
 		bool RemoveFirst(const T1& first)
 		{
-			const auto& key1 = map1.find(&first);
-			if (key1 == map1.end())
+			const auto& itKey1 = map1.find(&first);
+			if (itKey1 == map1.end())
 				return false;
-			const value_type* pItem = key1->second;
+			const value_type* pItem = itKey1->second;
 			map2.erase(&(pItem->second));
-			map1.erase(key1);
+			map1.erase(itKey1);
 			items.remove(*pItem);
 			return true;
 		}
 
 		bool RemoveSecond(const T2& second)
 		{
-			const auto& key2 = map2.find(&second);
-			if (key2 == map2.end())
+			const auto& itKey2 = map2.find(&second);
+			if (itKey2 == map2.cend())
 				return false;
-			const value_type* pItem = key2->second;
+			const value_type* pItem = itKey2->second;
 			map1.erase(&(pItem->first));
-			map2.erase(key2);
+			map2.erase(itKey2);
 			items.remove(*pItem);
 			return true;
 		}
@@ -262,7 +262,8 @@ namespace MapSpecial
 
 		void ChangeSecond(T1 first, T2 second)
 		{
-			auto item = map1.find(&first)->second;
+
+			value_type* item = map1.find(&first)->second;
 			// current second key must be removed from map2
 			map2.erase(&(item->second));
 			// change second value in the pair
@@ -273,7 +274,7 @@ namespace MapSpecial
 
 		void ChangeFirst(T1 first, T2 second)
 		{
-			auto item = map2.find(&second)->second;
+			value_type* item = map2.find(&second)->second;
 			// current first key must be removed from map1
 			map1.erase(&(item->first));
 			// change first value in the pair
