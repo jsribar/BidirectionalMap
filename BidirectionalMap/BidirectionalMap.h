@@ -249,7 +249,7 @@ namespace MapSpecial
 			}
 		}
 
-		bool ChangeFirstKey(const T1& first, const T2& second)
+		bool ChangeFirstKey(T1&& first, T2&& second)
 		{
 			assert(SecondExists(second));
 			auto it1 = map1.find(&first);
@@ -265,13 +265,13 @@ namespace MapSpecial
 			// current first key must be removed from map1
 			map1.erase(&itItem->first);
 			// change first key in the pair
-			itItem->first = first;
+			itItem->first = std::forward<T1>(first);
 			// new first key must be created
 			map1.emplace(&(itItem->first), itItem);
 			return true;
 		}
 
-		bool ChangeSecondKey(const T1& first, const T2& second)
+		bool ChangeSecondKey(T1&& first, T2&& second)
 		{
 			assert(FirstExists(first));
 			auto it2 = map2.find(&second);
@@ -287,7 +287,7 @@ namespace MapSpecial
 			// current second key must be removed from map2
 			map2.erase(&itItem->second);
 			// change second key in the pair
-			itItem->second = second;
+			itItem->second = std::forward<T2>(second);
 			// new second key must be created
 			map2.emplace(&(itItem->second), itItem);
 			return true;

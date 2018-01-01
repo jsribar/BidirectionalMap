@@ -10,7 +10,7 @@
 
 using namespace MapSpecial;
 
-void TestBidirectionalMapCopyAssignmentAccess()
+void TestBidirectionalMapCopyMoveAssignment()
 {
 	BidirectionalMap<int, Person> bm;
 
@@ -20,6 +20,8 @@ void TestBidirectionalMapCopyAssignmentAccess()
 
 	bm.ChangeSecond(1, Person("Mihovil", "Spalj"));
 	bm.ChangeFirst(3, Person("Mihovil", "Spalj"));
+
+	bm.ChangeSecond(3, dora);
 }
 
 void BidirectionalMapFunctionality()
@@ -105,7 +107,7 @@ void BidirectionalMapOfSameTypesFunctionality()
 
 int main()
 {
-	TestBidirectionalMapCopyAssignmentAccess();
+	TestBidirectionalMapCopyMoveAssignment();
 	BidirectionalMapFunctionality();
 	BidirectionalMapOfSameTypesFunctionality();
 	BidirectionalUnorderedMapFunctionality();
