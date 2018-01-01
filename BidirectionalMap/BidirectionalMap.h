@@ -21,7 +21,7 @@ freely, subject to the following restrictions :
 */
 
 #include <utility>
-#include <forward_list>
+#include <list>
 #include <map>
 #include <unordered_map>
 #include <cassert>
@@ -50,7 +50,7 @@ namespace MapSpecial
 	{
 	protected:
 		using value_type = std::pair<T1, T2>;
-		using Container = std::forward_list<value_type>;
+		using Container = std::list<value_type>;
 
 	public:
 		BidirectionalMapBase() = default;
@@ -93,8 +93,8 @@ namespace MapSpecial
 
 		bool Insert(const T1& first, const T2& second)
 		{
-			assert(Size() == map1.size());
-			assert(Size() == map2.size());
+			assert(items.size() == map1.size());
+			assert(items.size() == map2.size());
 			// do not perform insertion if any key already exists
 			if (FirstExists(first))
 			{
@@ -130,8 +130,8 @@ namespace MapSpecial
 		template <typename Q, typename R>
 		bool Change(Q first, R second)
 		{
-			assert(Size() == map1.size());
-			assert(Size() == map2.size());
+			assert(items.size() == map1.size());
+			assert(items.size() == map2.size());
 			// throw exception if neither first nor second key exist
 			if (!FirstExists(first) && !SecondExists(second))
 				throw std::out_of_range("At least one key provided must exist already in the map.");
@@ -148,9 +148,9 @@ namespace MapSpecial
 			map1.clear();
 			map2.clear();
 
-			assert(items.empty());
-			assert(map1.empty());
-			assert(map2.empty());
+			assert(items.size() == 0);
+			assert(map1.size() == 0);
+			assert(map2.size() == 0);
 		}
 
 		bool RemoveFirst(const T1& first)
@@ -179,7 +179,10 @@ namespace MapSpecial
 
 		size_t Size() const noexcept
 		{
-			return std::distance(items.cbegin(), items.cend());
+			assert(items.size() == map1.size());
+			assert(items.size() == map2.size());
+
+			return items.size();
 		}
 
 		bool FirstExists(const T1& first) const noexcept
@@ -194,15 +197,15 @@ namespace MapSpecial
 
 		const T2& AtFirst(const T1& first) const
 		{
-			assert(Size() == map1.size());
-			assert(Size() == map2.size());
+			assert(items.size() == map1.size());
+			assert(items.size() == map2.size());
 			return map1.at(&first)->second;
 		}
 
 		const T1& AtSecond(const T2& second) const
 		{
-			assert(Size() == map1.size());
-			assert(Size() == map2.size());
+			assert(items.size() == map1.size());
+			assert(items.size() == map2.size());
 			return map2.at(&second)->first;
 		}
 
@@ -261,13 +264,13 @@ namespace MapSpecial
 		template <typename Q, typename R>
 		bool InsertPair(Q first, R second)
 		{
-			items.emplace_front(std::forward<Q>(first), std::forward<R>(second));
-			value_type& item = items.front();
+			items.emplace_back(std::forward<Q>(first), std::forward<R>(second));
+			value_type& item = items.back();
 			map1.emplace(&(item.first), &item);
 			map2.emplace(&(item.second), &item);
 
-			assert(Size() == map1.size());
-			assert(Size() == map2.size());
+			assert(items.size() == map1.size());
+			assert(items.size() == map2.size());
 			return true;
 		}
 
