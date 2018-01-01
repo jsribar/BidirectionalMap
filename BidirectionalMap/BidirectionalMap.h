@@ -97,10 +97,12 @@ namespace MapSpecial
 			assert(items.size() == map1.size());
 			assert(items.size() == map2.size());
 			// do not perform insertion if provided keypair already exists
-			if (PairExists(first, second))
-				return false;
 			if (FirstExists(first))
+			{
+				if (PairExists(first, second))
+					return false;
 				throw std::invalid_argument("First key already exists in the map.");
+			}
 			if (SecondExists(second))
 				throw std::invalid_argument("Second key already exists in the map.");
 
