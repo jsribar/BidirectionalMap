@@ -91,15 +91,40 @@ namespace MapSpecial
 			return *this;
 		}
 
-		template <typename Q, typename R>
-		bool Insert(Q first, R second)
+		bool Insert(const T1& first, const T2& second)
 		{
 			assert(items.size() == map1.size());
 			assert(items.size() == map2.size());
 			// do not perform insertion if any key already exists
-			if (FirstExists(first) || SecondExists(second))
-				return false;
-			return InsertPair(std::forward<Q>(first), std::forward<R>(second));
+			if (FirstExists(first))
+			{
+				if (map1.find(&first)->second->second == second)
+					return false;
+				throw std::invalid_argument("First key already exists in the map.");
+			}
+			if (SecondExists(second))
+			{
+				if (map2.find(&second)->second->first == first)
+					return false;
+				throw std::invalid_argument("Second key already exists in the map.");
+			}
+			return InsertPair(first, second);
+		}
+
+		// change the first value paired to existing second value
+		bool ChangeFirst(const T1& first, const T2& second)
+		{
+			if (!SecondExists(second))
+				throw std::out_of_range("The second key must exist in the map.");
+			return ChangeFirstValue(first, second);
+		}
+
+		// change the second value paired to existing first value
+		bool ChangeSecond(const T1& first, const T2& second)
+		{
+			if (!FirstExists(first))
+				throw std::out_of_range("The first key must exist in the map.");
+			return ChangeSecondValue(first, second);
 		}
 
 		template <typename Q, typename R>
@@ -107,10 +132,14 @@ namespace MapSpecial
 		{
 			assert(items.size() == map1.size());
 			assert(items.size() == map2.size());
-			// return false if both keys exist or if none exists
-			if (FirstExists(first) == SecondExists(second))
-				return false;
-			return ChangeValue(std::forward<Q>(first), std::forward<R>(second));
+			// throw exception if neither first nor second value exist
+			if (!FirstExists(first) && !SecondExists(second))
+				throw std::out_of_range("At least one key provided must exist already in the map.");
+			// if first key already exists, then second has to be changed
+			if (FirstExists(first))
+				return ChangeSecondValue(std::forward<Q>(first), std::forward<R>(second));
+			// if second key already exists, then first will be changed
+			return ChangeFirstValue(std::forward<Q>(first), std::forward<R>(second));
 		}
 
 		void Clear() noexcept
@@ -158,12 +187,12 @@ namespace MapSpecial
 
 		bool FirstExists(const T1& first) const noexcept
 		{
-			return map1.find(&first) != map1.end();
+			return map1.find(&first) != map1.cend();
 		}
 
 		bool SecondExists(const T2& second) const noexcept
 		{
-			return map2.find(&second) != map2.end();
+			return map2.find(&second) != map2.cend();
 		}
 
 		const T2& AtFirst(const T1& first) const
@@ -245,43 +274,45 @@ namespace MapSpecial
 			return true;
 		}
 
-		template <typename Q, typename R>
-		bool ChangeValue(Q first, R second)
-		{
-			// if first key already exists, then second will be changed
-			if (FirstExists(first))
-				ChangeSecond(std::forward<Q>(first), std::forward<R>(second));
-			// if second key already exists, then first will be changed
-			else
-				ChangeFirst(std::forward<Q>(first), std::forward<R>(second));
-
-			assert(items.size() == map1.size());
-			assert(items.size() == map2.size());
-			return true;
-		}
-
-		void ChangeSecond(T1 first, T2 second)
-		{
-
-			value_type* item = map1.find(&first)->second;
-			// current second key must be removed from map2
-			map2.erase(&(item->second));
-			// change second value in the pair
-			item->second = std::forward<T2>(second);
-			// new second key must be created
-			map2.emplace(&(item->second), item);
-		}
-
-		void ChangeFirst(T1 first, T2 second)
+		bool ChangeFirstValue(const T1& first, const T2& second)
 		{
 			value_type* item = map2.find(&second)->second;
+			if (FirstExists(first))
+			{
+				// if value is already assigned, return false
+				if (item->first == first)
+					return false;
+				throw std::invalid_argument("First value is already assigned to another second value.");
+			}
 			// current first key must be removed from map1
 			map1.erase(&(item->first));
 			// change first value in the pair
-			item->first = std::forward<T1>(first);
+			item->first = first;
 			// new first key must be created
 			map1.emplace(&(item->first), item);
+			return true;
 		}
+
+		bool ChangeSecondValue(const T1& first, const T2& second)
+		{
+			value_type* item = map1.find(&first)->second;
+			// if nothing to change, return false
+			if (SecondExists(second))
+			{
+				// if value is already assigned, return false
+				if (item->second == second)
+					return false;
+				throw std::invalid_argument("Second value is already assigned to another first value.");
+			}
+			// current second key must be removed from map2
+			map2.erase(&(item->second));
+			// change second value in the pair
+			item->second = second;
+			// new second key must be created
+			map2.emplace(&(item->second), item);
+			return true;
+		}
+
 	}; // class BidirectionalMapBase
 
 	// specialization for std::map

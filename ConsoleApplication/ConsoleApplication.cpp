@@ -56,8 +56,8 @@ void BidirectionalUnorderedMapFunctionality()
 
 	BidirectionalUnorderedMap<int, std::string> bum;
 
-	bum.Insert(1, "Dora"); // insert a new pair
-	bum.Insert(2, "Matej"); // insert a new pair
+	bum.Insert(1, "Dora"); // insert a new pair of values
+	bum.Insert(2, "Matej"); // insert a new pair of values
 
 	std::cout << "[2]=" << bum[2].c_str() << std::endl; // output second value paired with first value 2
 	std::cout << "[\"Dora\"]=" << bum["Dora"] << std::endl; // output first value paired with second value "Dora"

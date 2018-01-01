@@ -56,42 +56,176 @@ namespace UnitTests
 			}
 		}
 
-		TEST_METHOD(BidirectionalUnorderedMap_InsertMethodDoesNotAddPairIfFirstValueAlreadyExists)
+		TEST_METHOD(BidirectionalUnorderedMap_InsertMethodDoesNotAddKeyPairIfItAlreadyExists)
 		{
 			BidirectionalUnorderedMap<int, std::string> bm;
 			int first = 1;
 			std::string second = "hello";
 			bm.Insert(first, second);
 
-			bm.Insert(first, "world");
-
-			Assert::AreEqual(size_t(1), bm.Size());
-			Assert::AreEqual(second, bm.AtFirst(first));
-			Assert::AreEqual(first, bm.AtSecond(second));
-		}
-
-		TEST_METHOD(BidirectionalUnorderedMap_InsertMethodDoesNotAddPairIfSecondValueAlreadyExists)
-		{
-			BidirectionalUnorderedMap<int, std::string> bm;
-			int first = 1;
-			std::string second = "hello";
 			bm.Insert(first, second);
 
-			bm.Insert(2, second);
-
 			Assert::AreEqual(size_t(1), bm.Size());
 			Assert::AreEqual(second, bm.AtFirst(first));
 			Assert::AreEqual(first, bm.AtSecond(second));
 		}
 
-		TEST_METHOD(BidirectionalUnorderedMap_InsertMethodReturnsFalseIfPairHasNotBeenAddedSuccessfully)
+		TEST_METHOD(BidirectionalUnorderedMap_InsertMethodReturnsFalseIfPairAlreadyExists)
 		{
 			BidirectionalUnorderedMap<int, std::string> bm;
 			bm.Insert(1, "hello");
 
 			Assert::IsFalse(bm.Insert(1, "hello"));
-			Assert::IsFalse(bm.Insert(2, "hello"));
-			Assert::IsFalse(bm.Insert(1, "world"));
+		}
+
+		TEST_METHOD(BidirectionalUnorderedMap_InsertMethodThrows_invalid_argument_ExceptionIfOneOfKeysAlreadyExists)
+		{
+			BidirectionalUnorderedMap<int, std::string> bm;
+			int first = 1;
+			std::string second = "hello";
+			bm.Insert(first, second);
+
+			try
+			{
+				bm.Insert(2, second);
+				Assert::Fail();
+			}
+			catch (const std::invalid_argument&)
+			{
+			}
+
+			try
+			{
+				bm.Insert(first, "world");
+				Assert::Fail();
+			}
+			catch (const std::invalid_argument&)
+			{
+			}
+
+			Assert::AreEqual(size_t(1), bm.Size());
+			Assert::AreEqual(second, bm.AtFirst(first));
+			Assert::AreEqual(first, bm.AtSecond(second));
+		}
+
+		TEST_METHOD(BidirectionalUnorderedMap_ChangeFirstMethodChangesFirstValueForExistingPairThatHasSecondValueProvided)
+		{
+			BidirectionalUnorderedMap<int, std::string> bm;
+			int first = 1;
+			std::string second = "hello";
+			bm.Insert(first, second);
+
+			int newFirst = 5;
+			bm.ChangeFirst(newFirst, second);
+
+			Assert::AreEqual(size_t(1), bm.Size());
+			Assert::AreEqual(newFirst, bm.AtSecond(second));
+			Assert::AreEqual(second, bm.AtFirst(newFirst));
+		}
+
+		TEST_METHOD(BidirectionalUnorderedMap_ChangeFirstMethodThrows_out_of_range_ExceptionIfSecondValueDoesNotExistInTheMap)
+		{
+			BidirectionalUnorderedMap<int, std::string> bm;
+			int first = 1;
+			std::string second = "hello";
+			bm.Insert(first, second);
+
+			try
+			{
+				int newFirst = 5;
+				std::string newSecond = "world";
+				bm.ChangeFirst(newFirst, newSecond);
+				Assert::Fail();
+			}
+			catch (const std::out_of_range&)
+			{
+			}
+			Assert::AreEqual(size_t(1), bm.Size());
+			Assert::AreEqual(first, bm.AtSecond(second));
+			Assert::AreEqual(second, bm.AtFirst(first));
+		}
+
+		TEST_METHOD(BidirectionalUnorderedMap_ChangeFirstMethodThrows_invalid_argument_ExceptionIfFirstValueIsAlreadyAssignedToOtherSecondKey)
+		{
+			BidirectionalUnorderedMap<int, std::string> bm;
+			int first1 = 1;
+			std::string second1 = "hello";
+			bm.Insert(first1, second1);
+			int first2 = 2;
+			std::string second2 = "world";
+			bm.Insert(first2, second2);
+
+			try
+			{
+				bm.ChangeFirst(first1, second2);
+				Assert::Fail();
+			}
+			catch (const std::invalid_argument&)
+			{
+			}
+			Assert::AreEqual(size_t(2), bm.Size());
+			Assert::AreEqual(first1, bm.AtSecond(second1));
+			Assert::AreEqual(first2, bm.AtSecond(second2));
+		}
+
+		TEST_METHOD(BidirectionalUnorderedMap_ChangeSecondMethodChangesSecondValueForExistingPairThatHasFirstValueProvided)
+		{
+			BidirectionalUnorderedMap<int, std::string> bm;
+			int first = 1;
+			std::string second = "hello";
+			bm.Insert(first, second);
+
+			std::string newSecond = "world";
+			bm.ChangeSecond(first, newSecond);
+
+			Assert::AreEqual(size_t(1), bm.Size());
+			Assert::AreEqual(first, bm.AtSecond(newSecond));
+			Assert::AreEqual(newSecond, bm.AtFirst(first));
+		}
+
+		TEST_METHOD(BidirectionalUnorderedMap_ChangeSecondMethodThrows_out_of_range_ExceptionIfFirstValueDoesNotExistInTheMap)
+		{
+			BidirectionalUnorderedMap<int, std::string> bm;
+			int first = 1;
+			std::string second = "hello";
+			bm.Insert(first, second);
+
+			try
+			{
+				int newFirst = 5;
+				std::string newSecond = "world";
+				bm.ChangeSecond(newFirst, newSecond);
+				Assert::Fail();
+			}
+			catch (const std::out_of_range&)
+			{
+			}
+			Assert::AreEqual(size_t(1), bm.Size());
+			Assert::AreEqual(first, bm.AtSecond(second));
+			Assert::AreEqual(second, bm.AtFirst(first));
+		}
+
+		TEST_METHOD(BidirectionalUnorderedMap_ChangeSecondMethodThrows_invalid_argument_ExceptionIfSecondValueIsAlreadyAssignedToOtherFirstKey)
+		{
+			BidirectionalUnorderedMap<int, std::string> bm;
+			int first1 = 1;
+			std::string second1 = "hello";
+			bm.Insert(first1, second1);
+			int first2 = 2;
+			std::string second2 = "world";
+			bm.Insert(first2, second2);
+
+			try
+			{
+				bm.ChangeSecond(first1, second2);
+				Assert::Fail();
+			}
+			catch (const std::invalid_argument&)
+			{
+			}
+			Assert::AreEqual(size_t(2), bm.Size());
+			Assert::AreEqual(first1, bm.AtSecond(second1));
+			Assert::AreEqual(first2, bm.AtSecond(second2));
 		}
 
 		TEST_METHOD(BidirectionalUnorderedMap_ChangeMethodChangesFirstValueForExistingPairThatHasSameSecondValue)
@@ -124,14 +258,22 @@ namespace UnitTests
 			Assert::AreEqual(first, bm.AtSecond(newSecond));
 		}
 
-		TEST_METHOD(BidirectionalUnorderedMap_ChangeMethodDoesNotAddNewPairIfNoPairHasSameFirstOrSecondValue)
+		TEST_METHOD(BidirectionalUnorderedMap_ChangeMethodThrows_out_of_range_ExceptionIfNoPairHasSameFirstOrSecondValue)
 		{
 			BidirectionalUnorderedMap<int, std::string> bm;
 			bm.Insert(1, "hello");
 
-			bm.Change(2, "world");
-
-			Assert::AreEqual(size_t(1), bm.Size());
+			try
+			{
+				bm.Change(2, "world");
+				Assert::Fail();
+			}
+			catch (const std::out_of_range&)
+			{
+				Assert::AreEqual(size_t(1), bm.Size());
+				Assert::AreEqual(std::string("hello"), bm.AtFirst(1));
+				Assert::AreEqual(1, bm.AtSecond("hello"));
+			}
 		}
 
 		TEST_METHOD(BidirectionalUnorderedMap_ChangeMethodReturnsTrueIfExistingPairHasBeenModified)
