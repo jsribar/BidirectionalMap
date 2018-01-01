@@ -55,12 +55,14 @@ namespace MapSpecial
 	public:
 		BidirectionalMapBase() = default;
 
+		// copy constructor
 		BidirectionalMapBase(const BidirectionalMapBase& other)
 			: items(other.items)
 		{
 			BuildMaps();
 		}
 
+		// move constructor
 		BidirectionalMapBase(BidirectionalMapBase&& other)
 			: items(std::move(other.items))
 			, map1(std::move(other.map1))
@@ -68,6 +70,7 @@ namespace MapSpecial
 		{
 		}
 
+		// initializer list constructor
 		BidirectionalMapBase(std::initializer_list<value_type> il)
 			: items{ il }
 		{
@@ -76,6 +79,7 @@ namespace MapSpecial
 
 		virtual ~BidirectionalMapBase() = default;
 
+		// copy assignment
 		BidirectionalMapBase& operator=(const BidirectionalMapBase& other)
 		{
 			items = items.other;
@@ -83,6 +87,7 @@ namespace MapSpecial
 			return *this;
 		}
 
+		// move assignment
 		BidirectionalMapBase& operator=(BidirectionalMapBase&& other)
 		{
 			items = std::move(other.items);
@@ -91,14 +96,15 @@ namespace MapSpecial
 			return *this;
 		}
 
+		// insert a new keypair
 		template <typename Q, typename R>
 		bool Insert(Q first, R second)
 		{
 			assert(items.size() == map1.size());
 			assert(items.size() == map2.size());
-			// do not perform insertion if provided keypair already exists
 			if (FirstExists(first))
 			{
+				// do not perform insertion if provided keypair already exists
 				if (PairExists(first, second))
 					return false;
 				throw std::invalid_argument("First key already exists in the map.");
@@ -134,6 +140,7 @@ namespace MapSpecial
 			return ChangeSecondKey(std::forward<Q>(first), std::forward<R>(second));
 		}
 
+		// remove a keypair which has given first key 
 		void RemoveFirst(const T1& first)
 		{
 			auto itKey1 = map1.find(&first);
@@ -145,6 +152,7 @@ namespace MapSpecial
 			items.erase(itItem);
 		}
 
+		// remove a keypair which has given second key 
 		void RemoveSecond(const T2& second)
 		{
 			auto itKey2 = map2.find(&second);
@@ -156,6 +164,7 @@ namespace MapSpecial
 			items.erase(itItem);
 		}
 
+		// clear the map
 		void Clear() noexcept
 		{
 			items.clear();
@@ -167,6 +176,7 @@ namespace MapSpecial
 			assert(map2.size() == 0);
 		}
 
+		// get number of keypairs in the map
 		size_t Size() const noexcept
 		{
 			assert(items.size() == map1.size());
@@ -175,16 +185,19 @@ namespace MapSpecial
 			return items.size();
 		}
 
+		// check if first key exists in the map
 		bool FirstExists(const T1& first) const noexcept
 		{
 			return map1.find(&first) != map1.cend();
 		}
 
+		// check if second key exists in the map
 		bool SecondExists(const T2& second) const noexcept
 		{
 			return map2.find(&second) != map2.cend();
 		}
 
+		// get the value assigned to given first key
 		const T2& AtFirst(const T1& first) const
 		{
 			assert(items.size() == map1.size());
@@ -192,6 +205,7 @@ namespace MapSpecial
 			return map1.at(&first)->second;
 		}
 
+		// get the value assigned to given second key
 		const T1& AtSecond(const T2& second) const
 		{
 			assert(items.size() == map1.size());
@@ -201,11 +215,13 @@ namespace MapSpecial
 
 		// overloaded methods and operators available only when T1 and T2 are different types
 
+		// get the value assigned to given first key using index operator
 		const T2& operator[](const T1& first) const
 		{
 			return AtFirst(first);
 		}
 
+		// get the value assigned to given second key using index operator
 		template <typename Q = T1, typename R = T2>
 		typename std::enable_if<std::is_same<Q, R>::value == false, const Q&>::type
 		operator[](const T2& second) const
@@ -213,11 +229,13 @@ namespace MapSpecial
 			return AtSecond(second);
 		}
 
+		// remove keypair with given first key
 		void Remove(const T1& first)
 		{
 			RemoveFirst(first);
 		}
 
+		// remove keypair with given second key
 		template <typename Q = T1, typename R = T2>
 		typename std::enable_if<!std::is_same<Q, R>::value, void>::type
 		Remove(const T2& second)
@@ -225,11 +243,13 @@ namespace MapSpecial
 			RemoveSecond(second);
 		}
 
+		// check if keypair with given first key exists
 		bool Exists(const T1& first) const noexcept
 		{
 			return FirstExists(first);
 		}
 
+		// check if keypair with given second key exists
 		template <typename Q = T1, typename R = T2>
 		typename std::enable_if<!std::is_same<Q, R>::value, bool>::type
 		Exists(const T2& second) const noexcept
