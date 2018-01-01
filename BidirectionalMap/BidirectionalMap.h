@@ -20,10 +20,10 @@ freely, subject to the following restrictions :
 3. This notice may not be removed or altered from any source distribution.
 */
 
-#include <utility>
 #include <list>
 #include <map>
 #include <unordered_map>
+#include <utility>
 #include <cassert>
 
 namespace MapSpecial
@@ -91,55 +91,67 @@ namespace MapSpecial
 			return *this;
 		}
 
-		bool Insert(const T1& first, const T2& second)
+		template <typename Q, typename R>
+		bool Insert(Q first, R second)
 		{
 			assert(items.size() == map1.size());
 			assert(items.size() == map2.size());
-			// do not perform insertion if any key already exists
+			// do not perform insertion if provided keypair already exists
+			if (PairExists(first, second))
+				return false;
 			if (FirstExists(first))
-			{
-				if (map1.find(&first)->second->second == second)
-					return false;
 				throw std::invalid_argument("First key already exists in the map.");
-			}
 			if (SecondExists(second))
-			{
-				if (map2.find(&second)->second->first == first)
-					return false;
 				throw std::invalid_argument("Second key already exists in the map.");
-			}
-			return InsertPair(first, second);
+
+			items.emplace_front(std::forward<Q>(first), std::forward<R>(second));
+			auto it = items.begin();
+			map1.emplace(&(it->first), it);
+			map2.emplace(&(it->second), it);
+
+			assert(items.size() == map1.size());
+			assert(items.size() == map2.size());
+			return true;
 		}
 
 		// change the first key paired to existing second key
-		bool ChangeFirst(const T1& first, const T2& second)
+		template <typename Q, typename R>
+		bool ChangeFirst(Q first, R second)
 		{
 			if (!SecondExists(second))
 				throw std::out_of_range("The second key must exist in the map.");
-			return ChangeFirstValue(first, second);
+			return ChangeFirstKey(std::forward<Q>(first), std::forward<R>(second));
 		}
 
 		// change the second key paired to existing first key
-		bool ChangeSecond(const T1& first, const T2& second)
+		template <typename Q, typename R>
+		bool ChangeSecond(Q first, R second)
 		{
 			if (!FirstExists(first))
 				throw std::out_of_range("The first key must exist in the map.");
-			return ChangeSecondValue(first, second);
+			return ChangeSecondKey(std::forward<Q>(first), std::forward<R>(second));
 		}
 
-		template <typename Q, typename R>
-		bool Change(Q first, R second)
+		void RemoveFirst(const T1& first)
 		{
-			assert(items.size() == map1.size());
-			assert(items.size() == map2.size());
-			// throw exception if neither first nor second key exist
-			if (!FirstExists(first) && !SecondExists(second))
-				throw std::out_of_range("At least one key provided must exist already in the map.");
-			// if first key already exists, then second has to be changed
-			if (FirstExists(first))
-				return ChangeSecondValue(std::forward<Q>(first), std::forward<R>(second));
-			// if second key already exists, then first will be changed
-			return ChangeFirstValue(std::forward<Q>(first), std::forward<R>(second));
+			auto itKey1 = map1.find(&first);
+			if (itKey1 == map1.end())
+				throw std::out_of_range("The first key must exist in the map.");
+			auto itItem = itKey1->second;
+			map2.erase(&(itItem->second));
+			map1.erase(itKey1);
+			items.erase(itItem);
+		}
+
+		void RemoveSecond(const T2& second)
+		{
+			auto itKey2 = map2.find(&second);
+			if (itKey2 == map2.end())
+				throw std::out_of_range("The first key must exist in the map.");
+			auto itItem = itKey2->second;
+			map1.erase(&(itItem->first));
+			map2.erase(itKey2);
+			items.erase(itItem);
 		}
 
 		void Clear() noexcept
@@ -151,30 +163,6 @@ namespace MapSpecial
 			assert(items.size() == 0);
 			assert(map1.size() == 0);
 			assert(map2.size() == 0);
-		}
-
-		bool RemoveFirst(const T1& first)
-		{
-			const auto& itKey1 = map1.find(&first);
-			if (itKey1 == map1.end())
-				return false;
-			const value_type* pItem = itKey1->second;
-			map2.erase(&(pItem->second));
-			map1.erase(itKey1);
-			items.remove(*pItem);
-			return true;
-		}
-
-		bool RemoveSecond(const T2& second)
-		{
-			const auto& itKey2 = map2.find(&second);
-			if (itKey2 == map2.cend())
-				return false;
-			const value_type* pItem = itKey2->second;
-			map1.erase(&(pItem->first));
-			map2.erase(itKey2);
-			items.remove(*pItem);
-			return true;
 		}
 
 		size_t Size() const noexcept
@@ -223,16 +211,16 @@ namespace MapSpecial
 			return AtSecond(second);
 		}
 
-		bool Remove(const T1& first)
+		void Remove(const T1& first)
 		{
-			return RemoveFirst(first);
+			RemoveFirst(first);
 		}
 
 		template <typename Q = T1, typename R = T2>
-		typename std::enable_if<!std::is_same<Q, R>::value, bool>::type
+		typename std::enable_if<!std::is_same<Q, R>::value, void>::type
 		Remove(const T2& second)
 		{
-			return RemoveSecond(second);
+			RemoveSecond(second);
 		}
 
 		bool Exists(const T1& first) const noexcept
@@ -249,67 +237,67 @@ namespace MapSpecial
 
 	private:
 		Container items;
-		TMap<const T1*, value_type*, TMapArgs<T1>...> map1;
-		TMap<const T2*, value_type*, TMapArgs<T2>...> map2;
+		TMap<const T1*, typename Container::iterator, TMapArgs<T1>...> map1;
+		TMap<const T2*, typename Container::iterator, TMapArgs<T2>...> map2;
 
 		void BuildMaps()
 		{
-			for (value_type& item : items)
+			for (auto it = items.begin(); it != items.end(); ++it)
 			{
-				map1.emplace(&(item.first), &item);
-				map2.emplace(&(item.second), &item);
+				map1.emplace(&(it->first), it);
+				map2.emplace(&(it->second), it);
 			}
 		}
 
-		template <typename Q, typename R>
-		bool InsertPair(Q first, R second)
+		bool ChangeFirstKey(const T1& first, const T2& second)
 		{
-			items.emplace_back(std::forward<Q>(first), std::forward<R>(second));
-			value_type& item = items.back();
-			map1.emplace(&(item.first), &item);
-			map2.emplace(&(item.second), &item);
-
-			assert(items.size() == map1.size());
-			assert(items.size() == map2.size());
-			return true;
-		}
-
-		bool ChangeFirstValue(const T1& first, const T2& second)
-		{
-			value_type* item = map2.find(&second)->second;
-			if (FirstExists(first))
+			assert(SecondExists(second));
+			auto it1 = map1.find(&first);
+			auto itItem = map2.find(&second)->second;
+			// if first key already exists
+			if (it1 != map1.end())
 			{
-				// if key is already assigned, return false
-				if (item->first == first)
+				// if key is already assigned to the new first key, return false
+				if (it1->second == itItem)
 					return false;
 				throw std::invalid_argument("First key is already assigned to another second key.");
 			}
 			// current first key must be removed from map1
-			map1.erase(&(item->first));
+			map1.erase(&itItem->first);
 			// change first key in the pair
-			item->first = first;
+			itItem->first = first;
 			// new first key must be created
-			map1.emplace(&(item->first), item);
+			map1.emplace(&(itItem->first), itItem);
 			return true;
 		}
 
-		bool ChangeSecondValue(const T1& first, const T2& second)
+		bool ChangeSecondKey(const T1& first, const T2& second)
 		{
-			value_type* item = map1.find(&first)->second;
-			if (SecondExists(second))
+			assert(FirstExists(first));
+			auto it2 = map2.find(&second);
+			auto itItem = map1.find(&first)->second;
+			// if second key already exists
+			if (it2 != map2.end())
 			{
-				// if key is already assigned, return false
-				if (item->second == second)
+				// if key is already assigned to the new second key, return false
+				if (it2->second == itItem)
 					return false;
 				throw std::invalid_argument("Second key is already assigned to another first key.");
 			}
 			// current second key must be removed from map2
-			map2.erase(&(item->second));
+			map2.erase(&itItem->second);
 			// change second key in the pair
-			item->second = second;
+			itItem->second = second;
 			// new second key must be created
-			map2.emplace(&(item->second), item);
+			map2.emplace(&(itItem->second), itItem);
 			return true;
+		}
+
+		bool PairExists(const T1& first, const T2& second) const noexcept
+		{
+			auto it1 = map1.find(&first);
+			auto it2 = map2.find(&second);
+			return it1 != map1.end() && it2 != map2.end() && it1->second == it2->second;
 		}
 
 	}; // class BidirectionalMapBase

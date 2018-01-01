@@ -18,8 +18,8 @@ void TestBidirectionalMapCopyAssignmentAccess()
 	bm.Insert(1, dora);
 	bm.Insert(2, Person("Matej", "Sribar"));
 
-	bm.Change(1, Person("Mihovil", "Spalj"));
-	bm.Change(2, dora);
+	bm.ChangeSecond(1, Person("Mihovil", "Spalj"));
+	bm.ChangeFirst(3, Person("Mihovil", "Spalj"));
 }
 
 void BidirectionalMapFunctionality()
@@ -34,8 +34,8 @@ void BidirectionalMapFunctionality()
 	std::cout << "[2]=" << bm[2].c_str() << std::endl; // output second value paired with first value 2
 	std::cout << "[\"Dora\"]=" << bm["Dora"] << std::endl; // output first value paired with second value "Dora"
 
-	bm.Change(3, "Matej"); // change the first value in an existing pair that has second value "Matej"
-	bm.Change(1, "Vedran"); // change the second value in an existing pair that has first value 1
+	bm.ChangeFirst(3, "Matej"); // change the first value in an existing pair that has second value "Matej"
+	bm.ChangeSecond(1, "Vedran"); // change the second value in an existing pair that has first value 1
 
 	bm.Remove("Vedran"); // remove pair that has second value "Vedran"
 	bm.Remove(3); // remove pair that has first value 3
@@ -62,8 +62,8 @@ void BidirectionalUnorderedMapFunctionality()
 	std::cout << "[2]=" << bum[2].c_str() << std::endl; // output second value paired with first value 2
 	std::cout << "[\"Dora\"]=" << bum["Dora"] << std::endl; // output first value paired with second value "Dora"
 
-	bum.Change(3, "Matej"); // change the first value in an existing pair that has second value "Matej"
-	bum.Change(1, "Vedran"); // change the second value in an existing pair that has first value 1
+	bum.ChangeFirst(3, "Matej"); // change the first value in an existing pair that has second value "Matej"
+	bum.ChangeSecond(1, "Vedran"); // change the second value in an existing pair that has first value 1
 
 	bum.Remove("Vedran"); // remove pair that has second value "Vedran"
 	bum.Remove(3); // remove pair that has first value 3
@@ -89,7 +89,7 @@ void BidirectionalMapOfSameTypesFunctionality()
 
     std::cout << "[\"Home\"]=" << bm["Home"].c_str() << std::endl; // output second value paired with "Home"
 
-	bm.Change("Home", "Haus"); // change the second value in an existing pair that has first value "Home"
+	bm.ChangeSecond("Home", "Haus"); // change the second value in an existing pair that has first value "Home"
 
 	bm.RemoveFirst("Roof"); // remove pair that has first value "Roof"
 
