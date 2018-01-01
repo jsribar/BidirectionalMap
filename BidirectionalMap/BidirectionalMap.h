@@ -111,7 +111,7 @@ namespace MapSpecial
 			return InsertPair(first, second);
 		}
 
-		// change the first value paired to existing second value
+		// change the first key paired to existing second key
 		bool ChangeFirst(const T1& first, const T2& second)
 		{
 			if (!SecondExists(second))
@@ -119,7 +119,7 @@ namespace MapSpecial
 			return ChangeFirstValue(first, second);
 		}
 
-		// change the second value paired to existing first value
+		// change the second key paired to existing first key
 		bool ChangeSecond(const T1& first, const T2& second)
 		{
 			if (!FirstExists(first))
@@ -132,7 +132,7 @@ namespace MapSpecial
 		{
 			assert(items.size() == map1.size());
 			assert(items.size() == map2.size());
-			// throw exception if neither first nor second value exist
+			// throw exception if neither first nor second key exist
 			if (!FirstExists(first) && !SecondExists(second))
 				throw std::out_of_range("At least one key provided must exist already in the map.");
 			// if first key already exists, then second has to be changed
@@ -279,14 +279,14 @@ namespace MapSpecial
 			value_type* item = map2.find(&second)->second;
 			if (FirstExists(first))
 			{
-				// if value is already assigned, return false
+				// if key is already assigned, return false
 				if (item->first == first)
 					return false;
-				throw std::invalid_argument("First value is already assigned to another second value.");
+				throw std::invalid_argument("First key is already assigned to another second key.");
 			}
 			// current first key must be removed from map1
 			map1.erase(&(item->first));
-			// change first value in the pair
+			// change first key in the pair
 			item->first = first;
 			// new first key must be created
 			map1.emplace(&(item->first), item);
@@ -296,17 +296,16 @@ namespace MapSpecial
 		bool ChangeSecondValue(const T1& first, const T2& second)
 		{
 			value_type* item = map1.find(&first)->second;
-			// if nothing to change, return false
 			if (SecondExists(second))
 			{
-				// if value is already assigned, return false
+				// if key is already assigned, return false
 				if (item->second == second)
 					return false;
-				throw std::invalid_argument("Second value is already assigned to another first value.");
+				throw std::invalid_argument("Second key is already assigned to another first key.");
 			}
 			// current second key must be removed from map2
 			map2.erase(&(item->second));
-			// change second value in the pair
+			// change second key in the pair
 			item->second = second;
 			// new second key must be created
 			map2.emplace(&(item->second), item);

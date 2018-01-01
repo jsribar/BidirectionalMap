@@ -12,7 +12,7 @@ namespace UnitTests
 	{
 	public:
 
-		TEST_METHOD(BidirectionalMap_InsertMethodAddsNewPair)
+		TEST_METHOD(BidirectionalMap_InsertMethodAddsNewKeyPair)
 		{
 			BidirectionalMap<int, std::string> bm;
 			Assert::AreEqual(size_t(0), bm.Size());
@@ -26,26 +26,14 @@ namespace UnitTests
 			Assert::AreEqual(first, bm.AtSecond(second));
 		}
 
-		TEST_METHOD(BidirectionalMap_InsertMethodAddsNewPairForSameValueTypes)
-		{
-			BidirectionalMap<int, int> bm;
-			Assert::AreEqual(size_t(0), bm.Size());
-
-			bm.Insert(1, 101);
-
-			Assert::AreEqual(size_t(1), bm.Size());
-			Assert::AreEqual(101, bm.AtFirst(1));
-			Assert::AreEqual(1, bm.AtSecond(101));
-		}
-
-		TEST_METHOD(BidirectionalMap_InsertMethodReturnsTrueIfPairHasBeenAddedSuccessfully)
+		TEST_METHOD(BidirectionalMap_InsertMethodReturnsTrueIfKeyPairHasBeenAddedSuccessfully)
 		{
 			BidirectionalMap<int, std::string> bm;
 
 			Assert::IsTrue(bm.Insert(1, "hello"));
 		}
 
-		TEST_METHOD(BidirectionalMap_InsertMethodCreatesMultiplePairsForEveryCompletelyDifferentPair)
+		TEST_METHOD(BidirectionalMap_InsertMethodCreatesMultipleKeyPairsForEveryUniqueKeyPair)
 		{
 			std::vector<std::pair<int, std::string>> entries =
 			{
@@ -68,7 +56,7 @@ namespace UnitTests
 			}
 		}
 
-		TEST_METHOD(BidirectionalMap_InsertMethodDoesNotAddKeyPairIfItAlreadyExists)
+		TEST_METHOD(BidirectionalMap_InsertMethodDoesNotAddKeyPairIfIdenticalKeyPairAlreadyExists)
 		{
 			BidirectionalMap<int, std::string> bm;
 			int first = 1;
@@ -82,7 +70,7 @@ namespace UnitTests
 			Assert::AreEqual(first, bm.AtSecond(second));
 		}
 
-		TEST_METHOD(BidirectionalMap_InsertMethodReturnsFalseIfPairAlreadyExists)
+		TEST_METHOD(BidirectionalMap_InsertMethodReturnsFalseIfIdenticalKeyPairAlreadyExists)
 		{
 			BidirectionalMap<int, std::string> bm;
 			bm.Insert(1, "hello");
@@ -120,7 +108,7 @@ namespace UnitTests
 			Assert::AreEqual(first, bm.AtSecond(second));
 		}
 
-		TEST_METHOD(BidirectionalMap_ChangeFirstMethodChangesFirstValueForExistingPairThatHasSecondValueProvided)
+		TEST_METHOD(BidirectionalMap_ChangeFirstMethodChangesFirstKeyInExistingKeyPairThatHasGivenSecondKey)
 		{
 			BidirectionalMap<int, std::string> bm;
 			int first = 1;
@@ -135,7 +123,7 @@ namespace UnitTests
 			Assert::AreEqual(second, bm.AtFirst(newFirst));
 		}
 
-		TEST_METHOD(BidirectionalMap_ChangeFirstMethodThrows_out_of_range_ExceptionIfSecondValueDoesNotExistInTheMap)
+		TEST_METHOD(BidirectionalMap_ChangeFirstMethodThrows_out_of_range_ExceptionIfSecondKeyDoesNotExistInTheMap)
 		{
 			BidirectionalMap<int, std::string> bm;
 			int first = 1;
@@ -157,7 +145,7 @@ namespace UnitTests
 			Assert::AreEqual(second, bm.AtFirst(first));
 		}
 
-		TEST_METHOD(BidirectionalMap_ChangeFirstMethodThrows_invalid_argument_ExceptionIfFirstValueIsAlreadyAssignedToOtherSecondKey)
+		TEST_METHOD(BidirectionalMap_ChangeFirstMethodThrows_invalid_argument_ExceptionIfIdenticalFirstKeyIsAlreadyAssignedToAnotherSecondKey)
 		{
 			BidirectionalMap<int, std::string> bm;
 			int first1 = 1;
@@ -180,7 +168,7 @@ namespace UnitTests
 			Assert::AreEqual(first2, bm.AtSecond(second2));
 		}
 
-		TEST_METHOD(BidirectionalMap_ChangeSecondMethodChangesSecondValueForExistingPairThatHasFirstValueProvided)
+		TEST_METHOD(BidirectionalMap_ChangeSecondMethodChangesSecondKeyInExistingKeyPairThatHasGivenFirstKey)
 		{
 			BidirectionalMap<int, std::string> bm;
 			int first = 1;
@@ -195,7 +183,7 @@ namespace UnitTests
 			Assert::AreEqual(newSecond, bm.AtFirst(first));
 		}
 
-		TEST_METHOD(BidirectionalMap_ChangeSecondMethodThrows_out_of_range_ExceptionIfFirstValueDoesNotExistInTheMap)
+		TEST_METHOD(BidirectionalMap_ChangeSecondMethodThrows_out_of_range_ExceptionIfFirstKeyDoesNotExistInTheMap)
 		{
 			BidirectionalMap<int, std::string> bm;
 			int first = 1;
@@ -217,7 +205,7 @@ namespace UnitTests
 			Assert::AreEqual(second, bm.AtFirst(first));
 		}
 
-		TEST_METHOD(BidirectionalMap_ChangeSecondMethodThrows_invalid_argument_ExceptionIfSecondValueIsAlreadyAssignedToOtherFirstKey)
+		TEST_METHOD(BidirectionalMap_ChangeSecondMethodThrows_invalid_argument_ExceptionIfSecondKeyIsAlreadyAssignedToOtherFirstKey)
 		{
 			BidirectionalMap<int, std::string> bm;
 			int first1 = 1;
@@ -240,7 +228,7 @@ namespace UnitTests
 			Assert::AreEqual(first2, bm.AtSecond(second2));
 		}
 
-		TEST_METHOD(BidirectionalMap_ChangeMethodChangesFirstValueForExistingPairThatHasSameSecondValue)
+		TEST_METHOD(BidirectionalMap_ChangeMethodChangesFirstKeyForExistingKeyPairThatHasGivenSecondKey)
 		{
 			BidirectionalMap<int, std::string> bm;
 			int first = 1;
@@ -255,7 +243,7 @@ namespace UnitTests
 			Assert::AreEqual(second, bm.AtFirst(newFirst));
 		}
 
-		TEST_METHOD(BidirectionalMap_ChangeMethodChangesSecondValueForExistingPairThatHasSameFirstValue)
+		TEST_METHOD(BidirectionalMap_ChangeMethodChangesSecondKeyForExistingKeyPairThatHasGivenFirstKey)
 		{
 			BidirectionalMap<int, std::string> bm;
 			int first = 1;
@@ -270,7 +258,7 @@ namespace UnitTests
 			Assert::AreEqual(first, bm.AtSecond(newSecond));
 		}
 
-		TEST_METHOD(BidirectionalMap_ChangeMethodThrows_out_of_range_ExceptionIfNoPairHasSameFirstOrSecondValue)
+		TEST_METHOD(BidirectionalMap_ChangeMethodThrows_out_of_range_ExceptionIfNoKeyPairHasSameFirstOrSecondKey)
 		{
 			BidirectionalMap<int, std::string> bm;
 			bm.Insert(1, "hello");
@@ -288,7 +276,7 @@ namespace UnitTests
 			Assert::AreEqual(1, bm.AtSecond("hello"));
 		}
 
-		TEST_METHOD(BidirectionalMap_ChangeMethodReturnsTrueIfExistingPairHasBeenModified)
+		TEST_METHOD(BidirectionalMap_ChangeMethodReturnsTrueIfExistingKeyPairHasBeenModified)
 		{
 			BidirectionalMap<int, std::string> bm;
 			bm.Insert(1, "hello");
@@ -297,7 +285,7 @@ namespace UnitTests
 			Assert::IsTrue(bm.Change(2, "world"));
 		}
 
-		TEST_METHOD(BidirectionalMap_ChangeMethodReturnsFalseForAlreadyExistingPair)
+		TEST_METHOD(BidirectionalMap_ChangeMethodReturnsFalseForAlreadyExistingKeyPair)
 		{
 			BidirectionalMap<int, std::string> bm;
 			int first = 1;
@@ -307,7 +295,7 @@ namespace UnitTests
 			Assert::IsFalse(bm.Change(first, second));
 		}
 
-		TEST_METHOD(BidirectionalMap_ClearMethodErasesAllItems)
+		TEST_METHOD(BidirectionalMap_ClearMethodErasesAllKeyPairs)
 		{
 			std::vector<std::pair<int, std::string>> entries =
 			{
@@ -324,7 +312,7 @@ namespace UnitTests
 			Assert::AreEqual(size_t(0), bm.Size());
 		}
 
-		TEST_METHOD(BidirectionalMap_RemoveMethodRemovesPairContainingProvidedValue)
+		TEST_METHOD(BidirectionalMap_RemoveMethodRemovesKeyPairContainingProvidedKey)
 		{
 			std::vector<std::pair<int, std::string>> entries =
 			{
@@ -354,7 +342,7 @@ namespace UnitTests
 			Assert::AreEqual(8, bm.AtSecond("Dobar dan"));
 		}
 
-		TEST_METHOD(BidirectionalMap_ExistsReturnsTrueIfAPairWithValueProvidedExists)
+		TEST_METHOD(BidirectionalMap_ExistsReturnsTrueIfAKeyPairWithGivenKeyExists)
 		{
 			int first = 1;
 			std::string second = "hello";
@@ -365,7 +353,7 @@ namespace UnitTests
 			Assert::IsTrue(bm.SecondExists(second));
 		}
 
-		TEST_METHOD(BidirectionalMap_ExistsReturnsFalseIfNoPairWithValueProvidedExists)
+		TEST_METHOD(BidirectionalMap_ExistsReturnsFalseIfNoKeyPairWithGivenKeyExists)
 		{
 			BidirectionalMap<int, std::string> bm;
 			bm.Insert(1, "hello");
@@ -478,7 +466,7 @@ namespace UnitTests
 			Assert::AreEqual(8, bm.AtSecond("Dobar dan"));
 		}
 
-		TEST_METHOD(BidirectionalMap_ForDifferentTypesIndexOperatorWithFirstValueReturnsSecondValue)
+		TEST_METHOD(BidirectionalMap_ForDifferentTypesIndexOperatorWithFirstKeyReturnsCorrespondingSecondKey)
 		{
 			BidirectionalMap<int, std::string> bm
 			{
@@ -494,7 +482,7 @@ namespace UnitTests
 			Assert::AreEqual(bm.AtFirst(8), bm[8]);
 		}
 
-		TEST_METHOD(BidirectionalMap_ForDifferentTypesIndexOperatorWithSecondValueReturnsFirstValue)
+		TEST_METHOD(BidirectionalMap_ForDifferentTypesIndexOperatorWithSecondKeyReturnsCorrespondingFirstKey)
 		{
 			BidirectionalMap<int, std::string> bm
 			{
@@ -530,7 +518,7 @@ namespace UnitTests
 			}
 		}
 
-		TEST_METHOD(BidirectionalMap_AtSecondThrows_out_of_range_ExceptionForNonExistentFirstKey)
+		TEST_METHOD(BidirectionalMap_AtSecondThrows_out_of_range_ExceptionForNonExistentSecondKey)
 		{
 			BidirectionalMap<int, int> bm
 			{
@@ -581,7 +569,7 @@ namespace UnitTests
 			Assert::AreEqual(2, bm.AtSecond("world"));
 		}
 
-		TEST_METHOD(BidirectionalMap_ForDifferentTypesRemoveMethodCanBeCalledWithEitherFirstOrSecondValue)
+		TEST_METHOD(BidirectionalMap_ForDifferentTypesRemoveMethodCanBeCalledWithEitherFirstOrSecondKey)
 		{
 			BidirectionalMap<int, std::string> bm
 			{
@@ -600,7 +588,7 @@ namespace UnitTests
 			Assert::IsFalse(bm.FirstExists(8));
 		}
 
-		TEST_METHOD(BidirectionalMap_ForDifferentTypesExistsMethodCanBeCalledWithEitherFirstOrSecondValue)
+		TEST_METHOD(BidirectionalMap_ForDifferentTypesExistsMethodCanBeCalledWithEitherFirstOrSecondKey)
 		{
 			BidirectionalMap<int, std::string> bm
 			{
