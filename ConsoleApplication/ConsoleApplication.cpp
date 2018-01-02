@@ -105,12 +105,33 @@ void BidirectionalMapOfSameTypesFunctionality()
 	bm.Clear(); // clear the container
 }
 
+#include <boost/config.hpp>
+#include <boost/bimap.hpp>
+#include <boost/bimap/unordered_set_of.hpp>
+
+using namespace boost::bimaps;
+
+void BoostBiMapFunctionality()
+{
+	typedef bimap<unordered_set_of<int>, unordered_set_of<std::string>> intStringBimapUnorderedSet;
+	typedef intStringBimapUnorderedSet::value_type positionIntString;
+	intStringBimapUnorderedSet boostBiMap;
+	
+	boostBiMap.insert(positionIntString(1, "hello"));
+	boostBiMap.insert(positionIntString(2, "world"));
+	boostBiMap.insert(positionIntString(2, "Guten Tag"));
+	boostBiMap.insert(positionIntString(3, "world"));
+	//boostBiMap.left[1] = "value1";
+	//boostBiMap.right["world"] = 6;
+}
+
 int main()
 {
-	BidirectionalMapCopyMoveAssignment();
-	BidirectionalMapFunctionality();
-	BidirectionalMapOfSameTypesFunctionality();
-	BidirectionalUnorderedMapFunctionality();
+	BoostBiMapFunctionality();
+	//BidirectionalMapCopyMoveAssignment();
+	//BidirectionalMapFunctionality();
+	//BidirectionalMapOfSameTypesFunctionality();
+	//BidirectionalUnorderedMapFunctionality();
 
 	std::cout << std::endl << "Finished" << std::endl;
 	char ch;

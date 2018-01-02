@@ -6,6 +6,7 @@
 #include <string>
 #include <boost/config.hpp>
 #include <boost/bimap.hpp>
+#include <boost/bimap/unordered_set_of.hpp>
 
 using Clock = std::chrono::high_resolution_clock;
 using time_point = const std::chrono::time_point<Clock>;
@@ -25,7 +26,7 @@ void CompareMapBidirectionalMapAccess(std::vector<std::string> strings)
 	auto now1 = clock.now();
 
 	// evaluate boost bimap map generation
-	typedef boost::bimap<int, std::string> intString_bimap;
+	typedef boost::bimap<boost::bimaps::unordered_set_of<int>, boost::bimaps::unordered_set_of<std::string>> intString_bimap;
 	typedef intString_bimap::value_type positionIntString;
 	intString_bimap boostBiMap;
 
@@ -68,7 +69,10 @@ void CompareMapBidirectionalMapAccess(std::vector<std::string> strings)
 
 	// evaluate bidirectional map access
 	for (size_t i = 0; i < strings.size(); ++i)
-		biMap.AtFirst(i);
+	{
+		auto text = biMap.AtFirst(i);
+		assert(text == strings[i]);
+	}
 
 	now2 = clock.now();
 	OutputDuration("Access bidirectional map members by int   ", now1, now2);
@@ -77,7 +81,10 @@ void CompareMapBidirectionalMapAccess(std::vector<std::string> strings)
 
 	// evaluate ordinary map access
 	for (size_t i = 0; i < strings.size(); ++i)
-		map[i];
+	{
+		auto text = map[i];
+		assert(text == strings[i]);
+	}
 
 	now2 = clock.now();
 	OutputDuration("Access map members by int                 ", now1, now2);
@@ -85,8 +92,11 @@ void CompareMapBidirectionalMapAccess(std::vector<std::string> strings)
 	now1 = clock.now();
 
 	// evaluate boost bidirectional map reverse access
-	for (const auto& s : strings)
-		boostBiMap.right.at(s);
+	for (size_t i = 0; i < strings.size(); ++i)
+	{
+		int a = boostBiMap.right.at(strings[i]);
+		assert(a == i);
+	}
 
 	now2 = clock.now();
 	OutputDuration("Access boost bimap members by string      ", now1, now2);
@@ -94,20 +104,23 @@ void CompareMapBidirectionalMapAccess(std::vector<std::string> strings)
 	now1 = clock.now();
 
 	// evaluate bidirectional map reverse access
-	for (const auto& s : strings)
-		biMap.AtSecond(s);
+	for (size_t i = 0; i < strings.size(); ++i)
+	{
+		int a = biMap.AtSecond(strings[i]);
+		assert(a == i);
+	}
 
 	now2 = clock.now();
 	OutputDuration("Access bidirectional map members by string", now1, now2);
 
-	now1 = clock.now();
+	//now1 = clock.now();
 
-	// evaluate bidirectional map reverse access
-	for (const auto& s : strings)
-		std::find_if(map.cbegin(), map.cend(), [&s](const std::pair<int, std::string>& item) { return item.second == s; })->first;
+	//// evaluate bidirectional map reverse access
+	//for (const auto& s : strings)
+	//	std::find_if(map.cbegin(), map.cend(), [&s](const std::pair<int, std::string>& item) { return item.second == s; })->first;
 
-	now2 = clock.now();
-	OutputDuration("Access map members by string              ", now1, now2);
+	//now2 = clock.now();
+	//OutputDuration("Access map members by string              ", now1, now2);
 
 
 	std::cout << "*** string-int ***" << std::endl;
@@ -115,7 +128,7 @@ void CompareMapBidirectionalMapAccess(std::vector<std::string> strings)
 	now1 = clock.now();
 
 	// evaluate boost bidirectional map generation
-	typedef boost::bimap<std::string, int> stringInt_bimap;
+	typedef boost::bimap<boost::bimaps::unordered_set_of<std::string>, boost::bimaps::unordered_set_of<int>> stringInt_bimap;
 	typedef stringInt_bimap::value_type positionStringInt;
 	stringInt_bimap boostBiMap2;
 
@@ -148,8 +161,11 @@ void CompareMapBidirectionalMapAccess(std::vector<std::string> strings)
 	now1 = clock.now();
 
 	// evaluate bidirectional map access
-	for (const auto& s : strings)
-		boostBiMap2.left.at(s);
+	for (size_t i = 0; i < strings.size(); ++i)
+	{
+		int a = boostBiMap2.left.at(strings[i]);
+		assert(a == i);
+	}
 
 	now2 = clock.now();
 	OutputDuration("Access boost bimap members by string      ", now1, now2);
@@ -157,8 +173,11 @@ void CompareMapBidirectionalMapAccess(std::vector<std::string> strings)
 	now1 = clock.now();
 
 	// evaluate bidirectional map access
-	for (const auto& s : strings)
-		biMap2.AtFirst(s);
+	for (size_t i = 0; i < strings.size(); ++i)
+	{
+		int a = biMap2.AtFirst(strings[i]);
+		assert(a == i);
+	}
 
 	now2 = clock.now();
 	OutputDuration("Access bidirectional map members by string", now1, now2);
@@ -166,8 +185,11 @@ void CompareMapBidirectionalMapAccess(std::vector<std::string> strings)
 	now1 = clock.now();
 
 	// evaluate ordinary map access
-	for (const auto& s : strings)
-		map2[s];
+	for (size_t i = 0; i < strings.size(); ++i)
+	{
+		int a = map2[strings[i]];
+		assert(a == i);
+	}
 
 	now2 = clock.now();
 	OutputDuration("Access map members by string              ", now1, now2);
@@ -185,17 +207,20 @@ void CompareMapBidirectionalMapAccess(std::vector<std::string> strings)
 
 	// evaluate bidirectional map reverse access
 	for (size_t i = 0; i < strings.size(); ++i)
-		biMap2.AtSecond(i);
+	{
+		auto text = biMap2.AtSecond(i);
+		assert(text == strings[i]);
+	}
 
 	now2 = clock.now();
 	OutputDuration("Access bidirectional map members by int   ", now1, now2);
 
-	now1 = clock.now();
+	//now1 = clock.now();
 
-	// evaluate bidirectional map reverse access
-	for (size_t i = 0; i < strings.size(); ++i)
-		std::find_if(map2.cbegin(), map2.cend(), [&](const std::pair<std::string, int>& item) { return item.second == i; })->first;
+	//// evaluate bidirectional map reverse access
+	//for (size_t i = 0; i < strings.size(); ++i)
+	//	std::find_if(map2.cbegin(), map2.cend(), [&](const std::pair<std::string, int>& item) { return item.second == i; })->first;
 
-	now2 = clock.now();
-	OutputDuration("Access map members by int                 ", now1, now2);
+	//now2 = clock.now();
+	//OutputDuration("Access map members by int                 ", now1, now2);
 }
