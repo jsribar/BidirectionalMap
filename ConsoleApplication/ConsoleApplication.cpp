@@ -10,7 +10,7 @@
 
 using namespace MapSpecial;
 
-void TestBidirectionalMapCopyMoveAssignment()
+void BidirectionalMapCopyMoveAssignment()
 {
 	BidirectionalMap<int, Person> bm;
 
@@ -107,7 +107,7 @@ void BidirectionalMapOfSameTypesFunctionality()
 
 int main()
 {
-	TestBidirectionalMapCopyMoveAssignment();
+	BidirectionalMapCopyMoveAssignment();
 	BidirectionalMapFunctionality();
 	BidirectionalMapOfSameTypesFunctionality();
 	BidirectionalUnorderedMapFunctionality();
