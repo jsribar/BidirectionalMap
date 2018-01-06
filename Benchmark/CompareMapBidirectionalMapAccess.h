@@ -58,9 +58,14 @@ void CompareMapBidirectionalMapAccess(std::vector<std::string> strings)
 
 	now1 = clock.now();
 
-	// evaluate boos bidirectional map access
+	std::string checkString;
+
+	// evaluate boost bidirectional map access
 	for (size_t i = 0; i < strings.size(); ++i)
-		boostBiMap.left.at(i);
+	{
+		checkString = boostBiMap.left.at(i);
+		assert(checkString == strings[i]);
+	}
 
 	now2 = clock.now();
 	OutputDuration("Access boost bimap members by int         ", now1, now2);
@@ -70,8 +75,8 @@ void CompareMapBidirectionalMapAccess(std::vector<std::string> strings)
 	// evaluate bidirectional map access
 	for (size_t i = 0; i < strings.size(); ++i)
 	{
-		auto text = biMap.AtFirst(i);
-		assert(text == strings[i]);
+		checkString = biMap.AtFirst(i);
+		assert(checkString == strings[i]);
 	}
 
 	now2 = clock.now();
@@ -82,8 +87,8 @@ void CompareMapBidirectionalMapAccess(std::vector<std::string> strings)
 	// evaluate ordinary map access
 	for (size_t i = 0; i < strings.size(); ++i)
 	{
-		auto text = map[i];
-		assert(text == strings[i]);
+		checkString = map[i];
+		assert(checkString == strings[i]);
 	}
 
 	now2 = clock.now();
@@ -160,7 +165,7 @@ void CompareMapBidirectionalMapAccess(std::vector<std::string> strings)
 
 	now1 = clock.now();
 
-	// evaluate bidirectional map access
+	// evaluate boost bidirectional map access
 	for (size_t i = 0; i < strings.size(); ++i)
 	{
 		int a = boostBiMap2.left.at(strings[i]);
@@ -198,7 +203,10 @@ void CompareMapBidirectionalMapAccess(std::vector<std::string> strings)
 
 	// evaluate boost bimap reverse access
 	for (size_t i = 0; i < strings.size(); ++i)
-		boostBiMap2.right.at(i);
+	{
+		checkString = boostBiMap2.right.at(i);
+		assert(checkString == strings[i]);
+	}
 
 	now2 = clock.now();
 	OutputDuration("Access boost bimap members by int         ", now1, now2);
@@ -208,8 +216,8 @@ void CompareMapBidirectionalMapAccess(std::vector<std::string> strings)
 	// evaluate bidirectional map reverse access
 	for (size_t i = 0; i < strings.size(); ++i)
 	{
-		auto text = biMap2.AtSecond(i);
-		assert(text == strings[i]);
+		checkString = biMap2.AtSecond(i);
+		assert(checkString == strings[i]);
 	}
 
 	now2 = clock.now();
