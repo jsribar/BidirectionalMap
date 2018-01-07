@@ -3,4 +3,4 @@ A simple (and naive) implementation of bidirectional map that allows fast access
 
 For initial implementation, I've picked some ideas presented by Vittorio Romeo (https://codereview.stackexchange.com/questions/42427/bidirectional-map-based-on-memory-manipulation). 
 
-Unlike boost::bimap its interface is not STL-like, but made to tailor my needs. First of all, paired items must be of different types (e.g. int-string pairs, but not int-int pairs). There are only few members in the interface, presented in the code sample on the Wiki page.
+Unlike boost::bimap its interface is not STL-like, but made to tailor my needs. There are only few members in the interface, presented in the code sample on the Wiki page.
